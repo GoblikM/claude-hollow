@@ -52,6 +52,8 @@ Spouští **uživatel z terminálu** (ne orchestrátor zevnitř Claude session):
 Při prvním spuštění vytvoří `features/<name>/` (GTD struktura, feature větev, worktree), vygeneruje `CLAUDE.md` a spustí Claude jako orchestrátora té feature.
 Při dalších spuštěních otevře existující feature.
 
+Feature `CLAUDE.md` vždy obsahuje tabulku **Klíčový kontext** — repozitář hry, worktree, větev. Orchestrátor ji musí přečíst jako první krok.
+
 ### Monitorování běžícího agenta
 
 ```bash
@@ -67,7 +69,7 @@ tail -f features/<feature>/tasks/<slug>/run-*.log
 office/
 ├── features/
 │   └── <name>/
-│       ├── CLAUDE.md       # Kontext orchestrátora (generován z _templates/feature-claude.md)
+│       ├── CLAUDE.md       # Kontext orchestrátora — obsahuje cestu k repozitáři hry, worktree, větev
 │       ├── tasks/          # Aktivní, akční tasky
 │       │   └── done/       # Dokončené tasky — archiv
 │       ├── blocked/        # Nelze spustit — čeká na ext. rozhodnutí/info

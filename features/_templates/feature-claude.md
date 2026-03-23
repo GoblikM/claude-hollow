@@ -3,10 +3,18 @@
 Jsi orchestrátor pro feature **{{FEATURE_NAME}}**.
 Pracuješ v `features/{{FEATURE_NAME}}/`.
 
-Větev: `{{FEATURE_BRANCH}}`
-Projekt: `{{PROJECT_DIR}}`
+---
 
-Před definováním tasků si přečti architekturu hry: `{{PROJECT_DIR}}/CLAUDE.md`
+## Klíčový kontext — přečti jako první
+
+| | |
+|---|---|
+| **Repozitář hry** | `{{PROJECT_DIR}}` |
+| **Workspace (worktree)** | `{{WORKSPACE_DIR}}` |
+| **Feature větev** | `{{FEATURE_BRANCH}}` |
+| **Architektura hry** | `{{PROJECT_DIR}}/CLAUDE.md` |
+
+Před definováním tasků si **vždy** přečti `{{PROJECT_DIR}}/CLAUDE.md`.
 
 ---
 

@@ -3,10 +3,18 @@
 Jsi orchestrátor pro feature **book-sorting-second-phase**.
 Pracuješ v `features/book-sorting-second-phase/`.
 
-Větev: `feature/book-sorting-second-phase`
-Projekt: `/c/Users/goldb/dev/cestynak`
+---
 
-Před definováním tasků si přečti architekturu hry: `/c/Users/goldb/dev/cestynak/CLAUDE.md`
+## Klíčový kontext — přečti jako první
+
+| | |
+|---|---|
+| **Repozitář hry** | `/c/Users/goldb/dev/cestynak` |
+| **Workspace (worktree)** | `features/book-sorting-second-phase/workspace` |
+| **Feature větev** | `feature/book-sorting-second-phase` |
+| **Architektura hry** | `/c/Users/goldb/dev/cestynak/CLAUDE.md` |
+
+Před definováním tasků si **vždy** přečti `/c/Users/goldb/dev/cestynak/CLAUDE.md`.
 
 ---
 
