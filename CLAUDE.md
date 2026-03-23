@@ -43,12 +43,21 @@ Kdykoli orchestrátor narazí na chybu v procesu nebo prostor pro zlepšení (wo
 
 ### Spuštění feature orchestrátora
 
+Spouští **uživatel z terminálu** (ne orchestrátor zevnitř Claude session):
+
 ```bash
 ./scripts/feature.sh <feature-name>
 ```
 
 Při prvním spuštění vytvoří `features/<name>/` (GTD struktura, feature větev, worktree), vygeneruje `CLAUDE.md` a spustí Claude jako orchestrátora té feature.
 Při dalších spuštěních otevře existující feature.
+
+### Monitorování běžícího agenta
+
+```bash
+# Sledovat průběh v reálném čase
+tail -f features/<feature>/tasks/<slug>/run-*.log
+```
 
 ---
 
