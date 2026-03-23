@@ -1,4 +1,4 @@
-# Office – Orchestrační centrum pro vývoj Čestyňáku
+# Office – Orchestrační centrum pro vývoj Česťyňáka
 
 Systém pro řízení AI agentů (Claude Code) při vývoji hry [Čestyňák](https://gitlab.com/martinsenkerik/cestynak). Kombinuje GTD metodiku s automatizovanou orchestrací agentů.
 
