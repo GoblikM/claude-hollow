@@ -1,0 +1,11 @@
+# Worktrees a klony agentů
+features/*/workspace/
+../.clones/
+
+# Logy agentů
+features/**/tasks/**/run-*.log
+features/**/tasks/**/screenshots/
+
+# Lokální nastavení
+.env
+.env.local
