@@ -2,12 +2,15 @@
 # feature.sh – Inicializuje feature workspace a spustí orchestrátora
 #
 # Použití:
-#   ./scripts/feature.sh <feature-name> <project-dir> [--from <branch>]
+#   ./scripts/feature.sh <feature-name> [--from <branch>]
 #   ./scripts/feature.sh -D <feature-name>   # smaž feature
 #
 # Příklady:
-#   ./scripts/feature.sh oprava-pismena ~/dev/cestynak
+#   ./scripts/feature.sh oprava-pismena
 #   ./scripts/feature.sh -D oprava-pismena
+
+# Cesta k cestynak projektu
+DEFAULT_PROJECT_DIR="/c/Users/goldb/dev/cestynak"
 
 set -euo pipefail
 
@@ -32,6 +35,10 @@ while [[ $# -gt 0 ]]; do
       FROM_BRANCH="$2"
       shift 2
       ;;
+    --project)
+      PROJECT_DIR="$2"
+      shift 2
+      ;;
     -*)
       echo "Neznámý přepínač: $1" >&2
       exit 1
@@ -39,8 +46,6 @@ while [[ $# -gt 0 ]]; do
     *)
       if [[ -z "$FEATURE_NAME" ]]; then
         FEATURE_NAME="$1"
-      elif [[ -z "$PROJECT_DIR" ]]; then
-        PROJECT_DIR="$1"
       else
         echo "Neočekávaný argument: $1" >&2
         exit 1
@@ -50,11 +55,13 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+PROJECT_DIR="${PROJECT_DIR:-$DEFAULT_PROJECT_DIR}"
+
 # ─── Validace ────────────────────────────────────────────────────────────────
 
 if [[ -z "$FEATURE_NAME" ]]; then
   echo "Chyba: chybí <feature-name>" >&2
-  echo "Použití: $0 <feature-name> <project-dir>" >&2
+  echo "Použití: $0 <feature-name>" >&2
   exit 1
 fi
 
@@ -78,7 +85,7 @@ if [[ "$DELETE_MODE" == true ]]; then
   fi
 
   # Smaž git worktree pokud existuje
-  if [[ -n "$PROJECT_DIR" && -d "$PROJECT_DIR" ]]; then
+  if [[ -d "$PROJECT_DIR" ]]; then
     WORKTREE_DIR="$FEATURE_DIR/workspace"
     if git -C "$PROJECT_DIR" worktree list 2>/dev/null | grep -q "$WORKTREE_DIR"; then
       echo "🌿 Odstraňuji git worktree..."
@@ -92,12 +99,6 @@ if [[ "$DELETE_MODE" == true ]]; then
 fi
 
 # ─── Validace project dir ────────────────────────────────────────────────────
-
-if [[ -z "$PROJECT_DIR" ]]; then
-  echo "Chyba: chybí <project-dir>" >&2
-  echo "Použití: $0 <feature-name> <project-dir>" >&2
-  exit 1
-fi
 
 PROJECT_DIR=$(realpath "$PROJECT_DIR")
 

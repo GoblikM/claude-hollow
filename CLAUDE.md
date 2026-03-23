@@ -1,52 +1,48 @@
 # Office – Orchestrační centrum pro vývoj Čestyňáku
 
-Tento adresář je centrála vývoje. Každá feature má vlastního orchestrátora spuštěného přes `feature.sh`.
+Tento adresář je centrála vývoje. Každá feature má vlastního orchestrátora v samostatné Claude session.
 
-## Tvá role zde (top-level)
+## Tvá role (top-level)
 
-Jsi top-level orchestrátor. Zpracováváš inbox, zakládáš nové features a máš přehled o stavu projektu.
+Zpracováváš inbox a zakládáš nové features. Tasky neimplementuješ — od toho jsou feature orchestrátoři.
 
-**Novou feature** vytvoříš příkazem:
+## Vytvoření nové feature
+
+Spusť skript (cesta k cestynak je zabudovaná):
 ```bash
-./scripts/feature.sh <feature-name> /c/Users/goldb/dev/cestynak
+./scripts/feature.sh <feature-name>
 ```
-Tím se vytvoří `features/<name>/` se strukturou, vygeneruje se `CLAUDE.md` a spustí se orchestrátor přímo pro tuto feature.
 
-**Orchestrátora existující feature** spustíš:
+Skript vytvoří GTD strukturu, feature větev, worktree, vygeneruje `CLAUDE.md` a spustí Claude jako orchestrátora té feature.
+
+Pro otevření existující feature:
 ```bash
-cd features/<name> && claude
+./scripts/feature.sh <feature-name>
 ```
+
+## Inbox
+
+Cokoli nezpracovaného patří do `inbox/`. Projdi inbox a zpracuj:
+- Akční → vytvoř feature nebo přidej do existující
+- Irelevantní → smaž
 
 ## Struktura
 
 ```
 office/
-├── CLAUDE.md               ← tento soubor (top-level kontext)
+├── CLAUDE.md               ← tento soubor
 ├── features/
-│   ├── _templates/         ← šablony (task.md, feature-claude.md, ...)
+│   ├── _templates/         ← šablony
 │   └── <feature-name>/
-│       ├── CLAUDE.md       ← kontext orchestrátora dané feature (generován z šablony)
+│       ├── CLAUDE.md       ← kontext orchestrátora dané feature
 │       ├── tasks/          ← tasky (done/ = archiv)
-│       ├── blocked/        ← čeká na external
-│       ├── icebox/         ← záměrně odloženo
-│       └── docs/           ← dokumentace k feature
-├── inbox/                  ← rychlý zachyt nápadů — zpracuj co nejdřív
+│       ├── blocked/
+│       ├── icebox/
+│       └── docs/
+├── inbox/
 └── scripts/
-    ├── cc.sh               ← spustí task agenta v izolovaném klonu
     ├── feature.sh          ← inicializuje feature + spustí orchestrátora
-    ├── lib.sh              ← sdílené utility
+    ├── cc.sh               ← spustí task agenta v izolovaném klonu
     ├── task-done.sh        ← přesune task do done/
     └── cleanup-clone.sh    ← uklidí klon po mergi
 ```
-
-## Inbox
-
-Cokoli nezpracovaného patří do `inbox/`. Při otevření tohoto adresáře projdi inbox a rozhoduj:
-- Akční → `features/<name>/tasks/<slug>/task.md`
-- Patří do existující feature → tam
-- Nová feature → `feature.sh`
-- Irelevantní → smaž
-
-## Přehled aktivních features
-
-Projdi `features/` a zkontroluj stav každé feature (tasks vs done, blocked).
