@@ -65,7 +65,8 @@ Všechny body musí být splněny:
 - Zapiš dokumentaci do `docs/` — co bylo implementováno, klíčová rozhodnutí
 
 ### 6. MR do upstream
-Informuj uživatele že může poslat MR:
+MR vytváří **výhradně uživatel ručně** — nikdy ho nevytvárej sám.
+Pouze informuj uživatele že je feature připravena k MR:
 `{{FEATURE_BRANCH}}` → `master` na GitLab (https://gitlab.com/martinsenkerik/cestynak)
 
 ---
