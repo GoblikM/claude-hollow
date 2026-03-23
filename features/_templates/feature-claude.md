@@ -41,32 +41,46 @@ Kdykoli narazíš na chybu v procesu nebo prostor pro zlepšení (workflow, skri
 - Rozlož požadavek na konkrétní tasky s jasnými acceptance criteria
 - Vytvoř `tasks/<slug>/task.md` pro každý task
 
-### 2. Checklist před spuštěním agenta
+### 2. Checklist před spuštěním pipeline
 Všechny body musí být splněny:
 - [ ] `task.md` existuje a má vyplněné Scope a Acceptance Criteria
 - [ ] Feature větev `{{FEATURE_BRANCH}}` existuje v projektu
-- [ ] Žádný starý klon pro tento slug (`../.clones/task-<slug>/`) — pokud existuje, smaž ho
 
-### 3. Spuštění agenta
-```bash
-# Z adresáře office/
-./scripts/cc.sh {{PROJECT_DIR}} --task features/{{FEATURE_NAME}}/tasks/<slug>/task.md
+### 3. Pipeline: implementace → review → testy
+
+**Krok 1 — Implementace:**
+Předej subagentovi obsah task.md jako prompt:
+```
+@task-agent [obsah task.md]
 ```
 
-### 4. Po dokončení agenta
-1. Projdi log agenta
-2. **Zkontroluj diff** — ověř každé AC samostatně z diffu. Nedůvěřuj agentovu tvrzení.
-3. Pokud AC nelze ověřit z diffu → task NENÍ done, spusť agenta znovu s upřesněním
-4. Pokud OK → merge task větve do feature větve:
-   ```bash
-   git -C {{PROJECT_DIR}} fetch ../.clones/task-<slug> task/<slug>:task/<slug>
-   git -C {{PROJECT_DIR}} checkout {{FEATURE_BRANCH}} && git merge task/<slug>
-   ```
-5. Archivuj task a uklidí klon:
-   ```bash
-   ./scripts/task-done.sh {{FEATURE_NAME}} <slug>
-   ./scripts/cleanup-clone.sh {{PROJECT_DIR}} <slug>
-   ```
+**Krok 2 — Code review:**
+Po dokončení implementace:
+```
+@code-reviewer Reviewuj task/<slug> v workspace {{WORKSPACE_DIR}}
+```
+- Pokud `CHANGES REQUESTED` → vrať se ke kroku 1 s konkrétním feedbackem z review
+- Pokud `APPROVED` → pokračuj
+
+**Krok 3 — Testy:**
+```
+@tester Otestuj task/<slug> v workspace {{WORKSPACE_DIR}}
+```
+- Pokud `TESTS FAIL` → vrať se ke kroku 1 s popisem selhání
+- Pokud `TESTS PASS` (nebo `SKIP` s odůvodněním) → pokračuj
+
+### 4. Merge po úspěšném pipeline
+
+```bash
+git -C {{WORKSPACE_DIR}} checkout {{FEATURE_BRANCH}}
+git -C {{WORKSPACE_DIR}} merge task/<slug>
+git -C {{WORKSPACE_DIR}} branch -d task/<slug>
+```
+
+Archivuj task:
+```bash
+./scripts/task-done.sh {{FEATURE_NAME}} <slug>
+```
 
 ### 5. Feature je hotová, když
 - Všechny tasky jsou v `tasks/done/`
