@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /c/Users/goldb/dev/cestynak show feature/standalone_book_sorting:game/minigames/books_sorting/books_sorting_minigame.gd)"
+    ]
+  }
+}
