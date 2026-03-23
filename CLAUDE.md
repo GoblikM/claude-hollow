@@ -4,14 +4,8 @@
 
 **Čestyňák** je vzdělávací hra pro děti zaměřená na češtinu.
 
-| Komponenta | Tech | Účel |
-|------------|------|------|
-| `game/` | Godot 4 + GDScript | Herní klient (Web, Android, iOS, Windows) |
-| `backend/` | Python / FastAPI + PostgreSQL | Cloud save synchronizace |
-| `web/` | PHP / WordPress pluginy | Správa licencí, autentizace, analytika |
-
-Projekt: `/c/Users/goldb/dev/cestynak`
-CLAUDE.md projektu (architektura, konvence): `/c/Users/goldb/dev/cestynak/CLAUDE.md`
+Repozitář hry: `/c/Users/goldb/dev/cestynak`
+Architektura a konvence hry: `/c/Users/goldb/dev/cestynak/CLAUDE.md`
 
 ---
 
@@ -33,7 +27,7 @@ Tato pravidla řídí každé rozhodnutí — od definice feature přes architek
 
 ### Přísné pravidlo
 
-**Orchestrátor NIKDY neimplementuje změny v `game/`, `backend/`, `web/` sám.** Veškeré změny kódu provádí výhradně agenti spuštění přes `cc.sh`. Bez výjimky — ani pro triviální změny, jednořádkové opravy.
+**Orchestrátor NIKDY neimplementuje změny v repozitáři hry sám.** Veškeré změny kódu provádí výhradně agenti spuštění přes `cc.sh`. Bez výjimky — ani pro triviální změny, jednořádkové opravy.
 
 Orchestrátor smí pouze:
 - Vytvářet a upravovat tasky, docs (v `features/`)
@@ -45,11 +39,9 @@ Orchestrátor smí pouze:
 
 ### Neustálé zlepšování
 
-Kdykoli orchestrátor narazí na chybu v procesu nebo prostor pro zlepšení (workflow, skripty, šablony…), **okamžitě to zachytí do `inbox/`**. Nečekat na "vhodnou chvíli". Cílem je každým dnem zlepšovat celou flow.
+Kdykoli orchestrátor narazí na chybu v procesu nebo prostor pro zlepšení (workflow, skripty, šablony…), **okamžitě to zachytí do `inbox/`**. Nečekat na "vhodnou chvíli".
 
 ### Spuštění feature orchestrátora
-
-Každá feature má svůj orchestrátor spuštěný příkazem:
 
 ```bash
 ./scripts/feature.sh <feature-name>
@@ -99,17 +91,17 @@ office/
 
 ## Git pravidla
 
-### Cestynak projekt (game, backend, web)
+### Repozitář hry
 
 - `feature/<název>` — nová funkcionalita; **vždy z master, nikdy z jiné feature větve**
 - `task/<název>` — agent větve; zakládá `cc.sh` automaticky; vždy z feature větve, nikdy z master
 - Po mergi task větve do feature větve ji ihned smaž
 - `master` — pouze přes review merge; agenti nesmí běžet přímo z master
+- MR se posílá z `feature/<název>` → `master` na GitLab (https://gitlab.com/martinsenkerik/cestynak)
 
 ### Office
 
-- Všechny změny commitovat přímo na `main`
-- Po každém commitu ihned pushovat (`git push`)
+- Všechny změny commitovat přímo na `main`, ihned pushovat
 - Vždy nový commit, nikdy `--amend` na publishnutém commitu
 
 ---
@@ -120,29 +112,15 @@ office/
 - **Nesmí** vytvářet tasky ani soubory mimo Scope
 - **Smí** zapsat log do své task složky
 - **Smí** vytvořit `inbox/<slug>.md` při zachycení důležitého poznatku mimo scope
-- Pokud narazí na blokátor → zdokumentují ho v sekci `## Notes` svého `task.md`
+- Pokud narazí na blokátor → zdokumentují ho v `## Notes` svého `task.md`
 
 ---
 
-## Pravidla pro kód
-
-### Obecná
-
-- **Bash příkazy v Claude**: NIKDY `echo`. Místo toho vždy dedikované nástroje: Glob, Grep, Read, Edit/Write.
-- **Při nejasnostech**: Použít `AskUserQuestion` místo hádání.
-
-### Game — specifická pravidla
+## Pravidla pro kód hry (Godot 4 / GDScript)
 
 - **Název hry v UI textech**: Vždy **Češťyňák** (š, ť). V kódu/identifikátorech: `cestynak`.
+- **Game commits**: Neobsahují `Co-Authored-By` trailer.
 - **Environment detection**: `OS.has_feature("cestynak-prod")`, ne hardcoded checks.
 - **Settings**: Vždy `get_setting_with_override()`, ne `get_setting()`.
 - **Analytics**: Každá nová feature musí mít od začátku naplánované analytics eventy.
-- **Game commits**: Neobsahují `Co-Authored-By` trailer.
-
-### Backend
-
-- **Strict TDD**: Spusť `pytest` po každém testu (RED), pak po implementaci (GREEN). Min. 80% coverage.
-
-### Web
-
-- **Cryptographic keys**: Před každým deploymentem zálohuj `defuse.txt` a `secret.txt` — ztráta je nenapravitelná.
+- **Testy**: Povinné pro logiku (unit), doporučené pro UI (vizuální).
