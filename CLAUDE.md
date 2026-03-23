@@ -106,8 +106,8 @@ office/
 - `task/<název>` — agent větve; zakládá `cc.sh` automaticky; vždy z feature větve, nikdy z master
 - Po mergi task větve do feature větve ji ihned smaž
 - `master` — pouze přes review merge; agenti nesmí běžet přímo z master
-- MR vytváří **výhradně uživatel ručně** — orchestrátor ani agenti MR nevytváří nikdy
-- MR se posílá z `feature/<název>` → `master` na GitLab (https://gitlab.com/martinsenkerik/cestynak)
+- Merge request na GitLab (`feature/<název>` → `master`) vytváří **výhradně uživatel ručně**
+- Orchestrátor pouze informuje že je feature připravena, ale MR nevytváří
 
 ### Office
 
