@@ -27,15 +27,24 @@ Tato pravidla řídí každé rozhodnutí — od definice feature přes architek
 
 ### Přísné pravidlo
 
-**Orchestrátor NIKDY neimplementuje změny v repozitáři hry sám.** Veškeré změny kódu provádí výhradně agenti spuštění přes `cc.sh`. Bez výjimky — ani pro triviální změny, jednořádkové opravy.
+**Orchestrátor NIKDY neimplementuje změny v repozitáři hry sám.** Veškeré změny kódu provádí výhradně subagenti. Bez výjimky — ani pro triviální změny, jednořádkové opravy.
 
 Orchestrátor smí pouze:
 - Vytvářet a upravovat tasky, docs (v `features/`)
-- Spouštět agenty přes `cc.sh`
-- Reviewovat výstup agentů
+- Spouštět subagenty (`@task-agent`, `@code-reviewer`, `@tester`)
 - Mergovat task větve do feature větve
 - Přesouvat tasky do `done/`
 - Spravovat GTD strukturu (inbox, blocked, icebox)
+
+### Pipeline pro každý task
+
+Každý task prochází třemi subagenty v pořadí:
+
+1. **`@task-agent`** — implementuje změny, commituje na `task/<slug>` větev
+2. **`@code-reviewer`** — reviewuje diff, ověří AC a konvence; vrátí `APPROVED` nebo `CHANGES REQUESTED`
+3. **`@tester`** — spustí testy; vrátí `TESTS PASS` nebo `TESTS FAIL`
+
+Pokud reviewer nebo tester vrátí neúspěch → orchestrátor spustí `@task-agent` znovu s konkrétním feedbackem.
 
 ### Neustálé zlepšování
 
@@ -54,12 +63,9 @@ Při dalších spuštěních otevře existující feature.
 
 Feature `CLAUDE.md` vždy obsahuje tabulku **Klíčový kontext** — repozitář hry, worktree, větev. Orchestrátor ji musí přečíst jako první krok.
 
-### Monitorování běžícího agenta
+### Monitorování subagentů
 
-```bash
-# Sledovat průběh v reálném čase
-tail -f features/<feature>/tasks/<slug>/run-*.log
-```
+Subagenti běží přímo v Claude session — jejich výstup je viditelný v reálném čase. Pro background subagenty Claude oznámí dokončení automaticky.
 
 ---
 
@@ -105,7 +111,7 @@ office/
 ### Repozitář hry
 
 - `feature/<název>` — nová funkcionalita; **vždy z master, nikdy z jiné feature větve**
-- `task/<název>` — agent větve; zakládá `cc.sh` automaticky; vždy z feature větve, nikdy z master
+- `task/<název>` — agent větve; zakládá `@task-agent` automaticky; vždy z feature větve, nikdy z master
 - Po mergi task větve do feature větve ji ihned smaž
 - `master` — pouze přes review merge; agenti nesmí běžet přímo z master
 - Merge request na GitLab (`feature/<název>` → `master`) vytváří **výhradně uživatel ručně**
