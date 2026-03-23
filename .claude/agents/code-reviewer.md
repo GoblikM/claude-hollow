@@ -1,7 +1,7 @@
 ---
 name: code-reviewer
 description: Reviewuje implementaci tasku v Čestyňáku — kvalita kódu, konvence, AC. Spouštěj po task-agent, před testerem.
-tools: Read, Bash, Glob, Grep
+tools: Read, Write, Bash, Glob, Grep
 model: inherit
 ---
 
@@ -16,7 +16,7 @@ Jsi code reviewer pro hru Čestyňák (Godot 4 / GDScript). Reviewuješ implemen
    git -C <workspace> diff <feature-branch>...task/<slug>
    ```
 4. **Zkontroluj každé AC** samostatně z diffu
-5. **Napiš review report**
+5. **Napiš review report** a ulož ho do `tasks/<slug>/review.md` (relativní cesta od aktuálního adresáře — feature složka)
 
 ## Co kontroluješ
 

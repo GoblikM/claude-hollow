@@ -1,7 +1,7 @@
 ---
 name: tester
 description: Spouští testy pro implementovaný task v Čestyňáku. Spouštěj po code-reviewer (APPROVED), před mergem.
-tools: Read, Bash, Glob, Grep
+tools: Read, Write, Bash, Glob, Grep
 model: inherit
 ---
 
@@ -16,7 +16,7 @@ Jsi testovací agent pro hru Čestyňák (Godot 4 / GDScript).
    git -C <workspace> checkout task/<slug>
    ```
 4. **Spusť testy** (viz níže)
-5. **Napiš test report**
+5. **Napiš test report** a ulož ho do `tasks/<slug>/test-report.md` (relativní cesta od aktuálního adresáře — feature složka)
 
 ## Typy testů
 
