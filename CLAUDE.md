@@ -1,6 +1,19 @@
-# Office – Orchestrační centrum pro vývoj Čestyňáku
+# CLAUDE.md – Office, orchestrační centrum pro vývoj Čestyňáku
 
-Tento adresář je centrála vývoje. Každá feature má vlastního orchestrátora v samostatné Claude session.
+## Projekt
+
+**Čestyňák** je vzdělávací hra pro děti zaměřená na češtinu.
+
+| Komponenta | Tech | Účel |
+|------------|------|------|
+| `game/` | Godot 4 + GDScript | Herní klient (Web, Android, iOS, Windows) |
+| `backend/` | Python / FastAPI + PostgreSQL | Cloud save synchronizace |
+| `web/` | PHP / WordPress pluginy | Správa licencí, autentizace, analytika |
+
+Projekt: `/c/Users/goldb/dev/cestynak`
+CLAUDE.md projektu (architektura, konvence): `/c/Users/goldb/dev/cestynak/CLAUDE.md`
+
+---
 
 ## Základní principy
 
@@ -16,61 +29,120 @@ Tato pravidla řídí každé rozhodnutí — od definice feature přes architek
 
 ---
 
-## Tvá role (top-level)
+## Orchestrátor a agenti
 
-Zpracováváš inbox a zakládáš nové features.
+### Přísné pravidlo
 
-**Přísné pravidlo:** Nikdy neimplementuješ změny v cestynak projektu sám. Veškeré změny kódu provádí výhradně agenti spuštění přes `cc.sh`. Bez výjimky — ani pro triviální změny, jednořádkové opravy.
+**Orchestrátor NIKDY neimplementuje změny v `game/`, `backend/`, `web/` sám.** Veškeré změny kódu provádí výhradně agenti spuštění přes `cc.sh`. Bez výjimky — ani pro triviální změny, jednořádkové opravy.
 
-Kdykoli narazíš na chybu v procesu nebo prostor pro zlepšení (workflow, skripty, šablony…), **okamžitě to zachyť do `inbox/`**. Nečekat na "vhodnou chvíli".
+Orchestrátor smí pouze:
+- Vytvářet a upravovat tasky, docs (v `features/`)
+- Spouštět agenty přes `cc.sh`
+- Reviewovat výstup agentů
+- Mergovat task větve do feature větve
+- Přesouvat tasky do `done/`
+- Spravovat GTD strukturu (inbox, blocked, icebox)
 
-## Vytvoření / otevření feature
+### Neustálé zlepšování
+
+Kdykoli orchestrátor narazí na chybu v procesu nebo prostor pro zlepšení (workflow, skripty, šablony…), **okamžitě to zachytí do `inbox/`**. Nečekat na "vhodnou chvíli". Cílem je každým dnem zlepšovat celou flow.
+
+### Spuštění feature orchestrátora
+
+Každá feature má svůj orchestrátor spuštěný příkazem:
 
 ```bash
 ./scripts/feature.sh <feature-name>
 ```
 
-Skript vytvoří GTD strukturu, feature větev, worktree, vygeneruje `CLAUDE.md` a spustí Claude jako orchestrátora té feature. Při dalším spuštění otevře existující feature.
+Při prvním spuštění vytvoří `features/<name>/` (GTD struktura, feature větev, worktree), vygeneruje `CLAUDE.md` a spustí Claude jako orchestrátora té feature.
+Při dalších spuštěních otevře existující feature.
 
-## Inbox
+---
 
-Cokoli nezpracovaného patří do `inbox/`. Při otevření tohoto adresáře projdi inbox a rozhoduj:
+## GTD architektura
 
-| Situace | Akce |
-|---------|------|
-| Nový nápad bez kontextu | → `inbox/<slug>.md` |
-| Inbox položka je akční | → nová feature nebo přidat do existující |
-| Inbox položka je akční, ale nelze spustit | → `features/<name>/blocked/<slug>/issue.md` |
-| Inbox položka odložena vědomě | → `features/<name>/icebox/<slug>/issue.md` |
-| Irelevantní | → smaž |
+```
+office/
+├── features/
+│   └── <name>/
+│       ├── CLAUDE.md       # Kontext orchestrátora (generován z _templates/feature-claude.md)
+│       ├── tasks/          # Aktivní, akční tasky
+│       │   └── done/       # Dokončené tasky — archiv
+│       ├── blocked/        # Nelze spustit — čeká na ext. rozhodnutí/info
+│       ├── icebox/         # Vědomě odloženo na pozdější fázi
+│       └── docs/           # Dokumentace specifická pro feature
+└── inbox/                  # Root-level capture bucket — nezpracované nápady
+```
 
-## GTD konvence
+### Konvence GTD složek
 
 | Složka | Pravidlo |
 |--------|----------|
 | `inbox/` | Cokoli nezpracovaného — nápad, poznatek, TODO bez feature kontextu |
 | `tasks/` | Akční, jasně definovaný, lze spustit ihned |
-| `blocked/` | Definovaný task, ale nelze spustit — čeká na ext. rozhodnutí/info |
-| `icebox/` | Vědomě odloženo — víme co chceme, ale ne teď |
+| `blocked/` | Definovaný task, ale nelze spustit — čeká na ext. rozhodnutí/implementaci/info |
+| `icebox/` | Vědomě odloženo — víme co chceme, ale ne teď (pozdější fáze) |
 | `tasks/done/` | Dokončené tasky — archiv v kontextu feature |
 
-## Struktura
+### Task lifecycle
 
-```
-office/
-├── CLAUDE.md               ← tento soubor
-├── features/
-│   ├── _templates/         ← šablony
-│   └── <feature-name>/
-│       ├── CLAUDE.md       ← kontext orchestrátora dané feature
-│       ├── tasks/          ← tasky (done/ = archiv)
-│       ├── blocked/
-│       ├── icebox/
-│       └── docs/
-├── inbox/
-└── scripts/
-    ├── feature.sh          ← inicializuje feature + spustí orchestrátora
-    ├── cc.sh               ← spustí task agenta v izolovaném klonu
-    ├── task-done.sh        ← přesune task do done/
-    └── cleanup-clone.sh    ← uklidí klon po mergi
-```
+| Situace | Akce |
+|---------|------|
+| Nový nápad bez kontextu | → `inbox/<slug>.md` |
+| Inbox položka je akční | → `features/<name>/tasks/<slug>/task.md` |
+| Task nelze spustit | → `features/<name>/blocked/<slug>/issue.md` |
+| Task odložen vědomě | → `features/<name>/icebox/<slug>/issue.md` |
+| Task dokončen | → přesun do `features/<name>/tasks/done/` |
+
+---
+
+## Git pravidla
+
+### Cestynak projekt (game, backend, web)
+
+- `feature/<název>` — nová funkcionalita; **vždy z master, nikdy z jiné feature větve**
+- `task/<název>` — agent větve; zakládá `cc.sh` automaticky; vždy z feature větve, nikdy z master
+- Po mergi task větve do feature větve ji ihned smaž
+- `master` — pouze přes review merge; agenti nesmí běžet přímo z master
+
+### Office
+
+- Všechny změny commitovat přímo na `main`
+- Po každém commitu ihned pushovat (`git push`)
+- Vždy nový commit, nikdy `--amend` na publishnutém commitu
+
+---
+
+## Pravidla pro agenty
+
+- Agenti pracují **výhradně v rámci `## Scope`** svého `task.md`
+- **Nesmí** vytvářet tasky ani soubory mimo Scope
+- **Smí** zapsat log do své task složky
+- **Smí** vytvořit `inbox/<slug>.md` při zachycení důležitého poznatku mimo scope
+- Pokud narazí na blokátor → zdokumentují ho v sekci `## Notes` svého `task.md`
+
+---
+
+## Pravidla pro kód
+
+### Obecná
+
+- **Bash příkazy v Claude**: NIKDY `echo`. Místo toho vždy dedikované nástroje: Glob, Grep, Read, Edit/Write.
+- **Při nejasnostech**: Použít `AskUserQuestion` místo hádání.
+
+### Game — specifická pravidla
+
+- **Název hry v UI textech**: Vždy **Češťyňák** (š, ť). V kódu/identifikátorech: `cestynak`.
+- **Environment detection**: `OS.has_feature("cestynak-prod")`, ne hardcoded checks.
+- **Settings**: Vždy `get_setting_with_override()`, ne `get_setting()`.
+- **Analytics**: Každá nová feature musí mít od začátku naplánované analytics eventy.
+- **Game commits**: Neobsahují `Co-Authored-By` trailer.
+
+### Backend
+
+- **Strict TDD**: Spusť `pytest` po každém testu (RED), pak po implementaci (GREEN). Min. 80% coverage.
+
+### Web
+
+- **Cryptographic keys**: Před každým deploymentem zálohuj `defuse.txt` a `secret.txt` — ztráta je nenapravitelná.
