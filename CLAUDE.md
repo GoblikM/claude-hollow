@@ -96,6 +96,9 @@ office/
 ### Cestynak repo
 Vždy pracuj s: `/c/Users/goldb/dev/cestynak`
 
+Před definováním tasků si přečti architekturu hry:
+`/c/Users/goldb/dev/cestynak/CLAUDE.md`
+
 ### MR do upstream
 Po dokončení všech tasků feature informuj uživatele že může poslat MR:
 `feature/<slug>` → `master` na GitLab (https://gitlab.com/martinsenkerik/cestynak)
