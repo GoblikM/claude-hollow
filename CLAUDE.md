@@ -2,6 +2,20 @@
 
 Tento adresář je centrála vývoje. Každá feature má vlastního orchestrátora v samostatné Claude session.
 
+## Základní principy
+
+Tato pravidla řídí každé rozhodnutí — od definice feature přes architekturu po poslední řádek kódu.
+
+1. **Produkt s vyšším smyslem** — Budujeme produkt pro děti. Využíváme jejich pozornost ve směru etiky, ekologie, seberozvoje a sounáležitosti.
+2. **Respekt k času hráče** — Každá vteřina strávená hraním má smysl.
+3. **Chyba je součást učení, ne selhání** — Herní mechaniky netrestají za špatnou odpověď. Motivace vnitřní, ne vnější srovnávání.
+4. **Dlouhodobě udržitelná řešení** — Stavíme systémy pořádně (včetně testů). Žádné quick-wins.
+5. **Bezpečnost dětí** — Žádný sběr dat nad rámec nezbytného. Důvěru rodičů nelze porušit.
+6. **Přístupnost** — Best effort pro co nejširší spektrum dětí.
+7. **Pravdivost a upřímnost** — Nejdřív pravda, pak naděje. Hráče nelze klamat ani zavádějícími formulacemi.
+
+---
+
 ## Tvá role (top-level)
 
 Zpracováváš inbox a zakládáš nové features.
