@@ -1,11 +1,11 @@
-# CLAUDE.md – Office, orchestrační centrum pro vývoj Čestyňáku
+# CLAUDE.md – Office, orchestrační centrum pro vývoj projektů
 
 ## Projekt
 
-**Čestyňák** je vzdělávací hra pro děti zaměřená na češtinu.
+**Office** je orchestrační systém pro vývoj libovolného projektu pomocí AI agentů.
 
-Repozitář hry: `../cestynak` (sesterský adresář vedle `office/`)
-Architektura a konvence hry: `../cestynak/CLAUDE.md`
+Repozitář projektu: předáváš přes `--project` při spuštění `feature.sh`, nebo je uložen v `features/<name>/CLAUDE.md`.
+Architektura projektu: `<project-dir>/CLAUDE.md` (pokud existuje)
 
 ---
 
@@ -13,13 +13,13 @@ Architektura a konvence hry: `../cestynak/CLAUDE.md`
 
 Tato pravidla řídí každé rozhodnutí — od definice feature přes architekturu po poslední řádek kódu.
 
-1. **Produkt s vyšším smyslem** — Budujeme produkt pro děti. Využíváme jejich pozornost ve směru etiky, ekologie, seberozvoje a sounáležitosti.
-2. **Respekt k času hráče** — Každá vteřina strávená hraním má smysl.
-3. **Chyba je součást učení, ne selhání** — Herní mechaniky netrestají za špatnou odpověď. Motivace vnitřní, ne vnější srovnávání.
+1. **Produkt s vyšším smyslem** — Stavíme věci, které dávají smysl. Každé rozhodnutí má sloužit uživatelům.
+2. **Respekt k času uživatele** — Každá vteřina strávená používáním produktu má smysl.
+3. **Chyba je součást procesu, ne selhání** — Iterujeme, testujeme, zlepšujeme.
 4. **Dlouhodobě udržitelná řešení** — Stavíme systémy pořádně (včetně testů). Žádné quick-wins.
-5. **Bezpečnost dětí** — Žádný sběr dat nad rámec nezbytného. Důvěru rodičů nelze porušit.
-6. **Přístupnost** — Best effort pro co nejširší spektrum dětí.
-7. **Pravdivost a upřímnost** — Nejdřív pravda, pak naděje. Hráče nelze klamat ani zavádějícími formulacemi.
+5. **Bezpečnost a soukromí** — Žádný sběr dat nad rámec nezbytného.
+6. **Přístupnost** — Best effort pro co nejširší spektrum uživatelů.
+7. **Pravdivost a upřímnost** — Nejdřív pravda, pak naděje.
 
 ---
 
@@ -27,7 +27,7 @@ Tato pravidla řídí každé rozhodnutí — od definice feature přes architek
 
 ### Přísné pravidlo
 
-**Orchestrátor NIKDY neimplementuje změny v repozitáři hry sám.** Veškeré změny kódu provádí výhradně subagenti. Bez výjimky — ani pro triviální změny, jednořádkové opravy.
+**Orchestrátor NIKDY neimplementuje změny v repozitáři projektu sám.** Veškeré změny kódu provádí výhradně subagenti. Bez výjimky — ani pro triviální změny, jednořádkové opravy.
 
 Orchestrátor smí pouze:
 - Vytvářet a upravovat tasky, docs (v `features/`)
@@ -55,13 +55,13 @@ Kdykoli orchestrátor narazí na chybu v procesu nebo prostor pro zlepšení (wo
 Spouští **uživatel z terminálu** (ne orchestrátor zevnitř Claude session):
 
 ```bash
-./scripts/feature.sh <feature-name>
+./scripts/feature.sh <feature-name> --project <path-to-project>
 ```
 
 Při prvním spuštění vytvoří `features/<name>/` (GTD struktura, feature větev, worktree), vygeneruje `CLAUDE.md` a spustí Claude jako orchestrátora té feature.
 Při dalších spuštěních otevře existující feature.
 
-Feature `CLAUDE.md` vždy obsahuje tabulku **Klíčový kontext** — repozitář hry, worktree, větev. Orchestrátor ji musí přečíst jako první krok.
+Feature `CLAUDE.md` vždy obsahuje tabulku **Klíčový kontext** — repozitář projektu, worktree, větev. Orchestrátor ji musí přečíst jako první krok.
 
 ### Monitorování subagentů
 
@@ -75,7 +75,7 @@ Subagenti běží přímo v Claude session — jejich výstup je viditelný v re
 office/
 ├── features/
 │   └── <name>/
-│       ├── CLAUDE.md       # Kontext orchestrátora — obsahuje cestu k repozitáři hry, worktree, větev
+│       ├── CLAUDE.md       # Kontext orchestrátora — obsahuje cestu k repozitáři projektu, worktree, větev
 │       ├── tasks/          # Aktivní, akční tasky
 │       │   └── done/       # Dokončené tasky — archiv
 │       ├── blocked/        # Nelze spustit — čeká na ext. rozhodnutí/info
@@ -108,13 +108,13 @@ office/
 
 ## Git pravidla
 
-### Repozitář hry
+### Repozitář projektu
 
-- `feature/<název>` — nová funkcionalita; **vždy z master, nikdy z jiné feature větve**
+- `feature/<název>` — nová funkcionalita; **vždy z master/main, nikdy z jiné feature větve**
 - `task/<název>` — agent větve; zakládá `@task-agent` automaticky; vždy z feature větve, nikdy z master
 - Po mergi task větve do feature větve ji ihned smaž
-- `master` — pouze přes review merge; agenti nesmí běžet přímo z master
-- Merge request na GitLab (`feature/<název>` → `master`) vytváří **výhradně uživatel ručně**
+- `master`/`main` — pouze přes review merge; agenti nesmí běžet přímo z master
+- Merge request vytváří **výhradně uživatel ručně**
 - Orchestrátor pouze informuje že je feature připravena, ale MR nevytváří
 
 ### Office
@@ -133,14 +133,3 @@ office/
 - **Smí** zapsat log do své task složky
 - **Smí** vytvořit `inbox/<slug>.md` při zachycení důležitého poznatku mimo scope
 - Pokud narazí na blokátor → zdokumentují ho v `## Notes` svého `task.md`
-
----
-
-## Pravidla pro kód hry (Godot 4 / GDScript)
-
-- **Název hry v UI textech**: Vždy **Češťyňák** (š, ť). V kódu/identifikátorech: `cestynak`.
-- **Game commits**: Neobsahují `Co-Authored-By` trailer.
-- **Environment detection**: `OS.has_feature("cestynak-prod")`, ne hardcoded checks.
-- **Settings**: Vždy `get_setting_with_override()`, ne `get_setting()`.
-- **Analytics**: Každá nová feature musí mít od začátku naplánované analytics eventy.
-- **Testy**: Povinné pro logiku (unit), doporučené pro UI (vizuální).

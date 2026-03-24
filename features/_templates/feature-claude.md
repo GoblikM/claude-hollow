@@ -9,12 +9,12 @@ Pracuješ v `features/{{FEATURE_NAME}}/`.
 
 | | |
 |---|---|
-| **Repozitář hry** | `{{PROJECT_DIR}}` |
+| **Repozitář projektu** | `{{PROJECT_DIR}}` |
 | **Workspace (worktree)** | `{{WORKSPACE_DIR}}` |
 | **Feature větev** | `{{FEATURE_BRANCH}}` |
-| **Architektura hry** | `{{PROJECT_DIR}}/CLAUDE.md` |
+| **Architektura projektu** | `{{PROJECT_DIR}}/CLAUDE.md` |
 
-Před definováním tasků si **vždy** přečti `{{PROJECT_DIR}}/CLAUDE.md`.
+Pokud `{{PROJECT_DIR}}/CLAUDE.md` existuje, přečti ho před definováním tasků.
 
 ---
 
@@ -40,7 +40,7 @@ Kdykoli narazíš na chybu v procesu nebo prostor pro zlepšení (workflow, skri
 
 **Než začneš plánovat tasky**, zeptej se uživatele na doplňující otázky.
 
-Cíl: pochopit záměr dostatečně na to, aby tasky mohly mít správná Acceptance Criteria — ne jen technický popis, ale i herní/UX kontext.
+Cíl: pochopit záměr dostatečně na to, aby tasky mohly mít správná Acceptance Criteria — ne jen technický popis, ale i kontext a UX záměr.
 
 **Jak na to:**
 1. Přečti úvodní popis uživatele
@@ -49,18 +49,17 @@ Cíl: pochopit záměr dostatečně na to, aby tasky mohly mít správná Accept
 4. Počkej na odpovědi — neplánuj tasky dřív, než je máš
 
 **Na co se typicky ptát (podle kontextu):**
-- **Herní prožitek**: Jak by to mělo vypadat/fungovat z pohledu dítěte? Co cítí/vidí?
-- **Edge cases**: Co se stane při chybné odpovědi / opakovaném průchodu / přerušení?
+- **Uživatelský prožitek**: Jak by to mělo vypadat/fungovat z pohledu uživatele?
+- **Edge cases**: Co se stane při chybném vstupu / opakovaném průchodu / přerušení?
 - **Scope**: Co explicitně *není* součástí tohoto požadavku?
-- **Závislosti**: Navazuje to na něco existujícího? Může to ovlivnit jiné části hry?
-- **Analytics**: Které události mají smysl sledovat?
+- **Závislosti**: Navazuje to na něco existujícího? Může to ovlivnit jiné části projektu?
 
 Teprve po získání odpovědí přejdi na krok 1.
 
 ---
 
 ### 1. Plánování
-- Přečti `{{PROJECT_DIR}}/CLAUDE.md` pro kontext architektury
+- Přečti `{{PROJECT_DIR}}/CLAUDE.md` pro kontext architektury (pokud existuje)
 - Rozlož požadavek na konkrétní tasky s jasnými acceptance criteria
 - Vytvoř `tasks/<slug>/task.md` pro každý task
 
@@ -110,8 +109,8 @@ Archivuj task:
 - Zapiš dokumentaci do `docs/` — co bylo implementováno, klíčová rozhodnutí
 
 ### 6. MR do upstream
-Merge request na GitLab vytváří **výhradně uživatel ručně** — nikdy ho nevytvárej sám.
-Pouze informuj uživatele že je větev `{{FEATURE_BRANCH}}` připravena k MR na GitLab.
+Merge request vytváří **výhradně uživatel ručně** — nikdy ho nevytvárej sám.
+Pouze informuj uživatele že je větev `{{FEATURE_BRANCH}}` připravena k MR.
 
 ---
 
@@ -132,7 +131,7 @@ Pouze informuj uživatele že je větev `{{FEATURE_BRANCH}}` připravena k MR na
 **AC musí ověřovat vyřešení problému, ne jen provedení změny.**
 
 - Špatné AC: "Funkce přejmenována z X na Y" — ověří jen že se změnil text
-- Dobré AC: "Po kliknutí na tlačítko se přehraje zvuk a hráč postoupí" — ověří funkcionalitu
+- Dobré AC: "Po kliknutí na tlačítko se přehraje animace a uživatel postoupí" — ověří funkcionalitu
 
 ### Scope
 Každý task musí mít `## Scope` sekci — seznam souborů/adresářů které smí agent měnit. Agent pracuje výhradně v rámci Scope.
@@ -140,15 +139,3 @@ Každý task musí mít `## Scope` sekci — seznam souborů/adresářů které 
 ### Agent smí navíc:
 - Zapsat log do své task složky
 - Vytvořit `../../inbox/<slug>.md` při zachycení důležitého poznatku mimo scope
-
----
-
-## Konvence projektu Čestyňák
-
-- Název hry v UI textech: **Češťyňák** (š, ť) — ne "Čestyňák"
-- Název v kódu/větvích/identifikátorech: `cestynak`
-- Environment detection: `OS.has_feature("cestynak-prod")`, ne hardcoded checks
-- Settings: vždy `get_setting_with_override()`, ne `get_setting()`
-- Testy: povinné pro logiku (unit), doporučené pro UI
-- Backend: TDD — RED→GREEN per test, min. 80% coverage
-- Game commits: **neobsahují** `Co-Authored-By` trailer

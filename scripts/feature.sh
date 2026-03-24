@@ -2,15 +2,15 @@
 # feature.sh – Inicializuje feature workspace a spustí orchestrátora
 #
 # Použití:
-#   ./scripts/feature.sh <feature-name> [--from <branch>]
-#   ./scripts/feature.sh -D <feature-name>   # smaž feature
+#   ./scripts/feature.sh <feature-name> --project <path>  # nová feature
+#   ./scripts/feature.sh <feature-name>                   # otevři existující feature
+#   ./scripts/feature.sh <feature-name> [--from <branch>] --project <path>
+#   ./scripts/feature.sh -D <feature-name>                # smaž feature
 #
 # Příklady:
-#   ./scripts/feature.sh oprava-pismena
-#   ./scripts/feature.sh -D oprava-pismena
-
-# Cesta k projektu (relativně od office repozitáře)
-DEFAULT_PROJECT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)/cestynak"
+#   ./scripts/feature.sh my-feature --project ../my-project
+#   ./scripts/feature.sh my-feature
+#   ./scripts/feature.sh -D my-feature
 
 set -euo pipefail
 
@@ -55,18 +55,21 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-PROJECT_DIR="${PROJECT_DIR:-$DEFAULT_PROJECT_DIR}"
-
 # ─── Validace ────────────────────────────────────────────────────────────────
 
 if [[ -z "$FEATURE_NAME" ]]; then
   echo "Chyba: chybí <feature-name>" >&2
-  echo "Použití: $0 <feature-name>" >&2
+  echo "Použití: $0 <feature-name> [--project <path>]" >&2
   exit 1
 fi
 
 FEATURE_SLUG=$(slugify "$FEATURE_NAME")
 FEATURE_DIR="$OFFICE_DIR/features/$FEATURE_SLUG"
+
+# Pokud --project není zadán a feature existuje, načti PROJECT_DIR z CLAUDE.md
+if [[ -z "$PROJECT_DIR" ]] && [[ -d "$FEATURE_DIR" ]] && [[ -f "$FEATURE_DIR/CLAUDE.md" ]]; then
+  PROJECT_DIR=$(grep -oP '(?<=\*\* \| `)[^`]+(?=` \|)' "$FEATURE_DIR/CLAUDE.md" | head -1 || true)
+fi
 
 # ─── Delete mode ─────────────────────────────────────────────────────────────
 
@@ -99,6 +102,12 @@ if [[ "$DELETE_MODE" == true ]]; then
 fi
 
 # ─── Validace project dir ────────────────────────────────────────────────────
+
+if [[ -z "$PROJECT_DIR" ]]; then
+  echo "Chyba: chybí --project <path>" >&2
+  echo "Použití: $0 <feature-name> --project <path-to-git-repo>" >&2
+  exit 1
+fi
 
 PROJECT_DIR=$(realpath "$PROJECT_DIR")
 
