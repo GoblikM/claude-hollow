@@ -1,12 +1,15 @@
-# Worktrees a klony agentů
-features/*/workspace/
+# Local working data — not tracked
+inbox/
+features/*
+!features/_templates/
+
+# Worktrees and agent clones
 ../.clones/
 
-# Logy agentů
-features/**/tasks/**/run-*.log
-features/**/tasks/**/screenshots/
+# Project registry (local)
+.projects
 
-# Lokální nastavení
+# Local settings
 .env
 .env.local
 .claude/settings.local.json

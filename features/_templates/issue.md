@@ -1,17 +1,17 @@
-# Issue: [název]
+# Issue: [name]
 
-## Typ
-- [ ] Blocked – čeká na external
-- [ ] Icebox – záměrně odloženo
+## Type
+- [ ] Blocked — waiting on external
+- [ ] Icebox — deliberately deferred
 
-## Popis
-Co je problém / proč je to odloženo.
+## Description
+What the problem is / why it is deferred.
 
-## Blokuje
-Který task nebo feature to blokuje.
+## Blocks
+Which task or feature this blocks.
 
-## Odblokuje
-Co musí nastat, aby šlo pokračovat.
+## Unblocked by
+What must happen to continue.
 
-## Poznámky
-Volitelně.
+## Notes
+Optional.

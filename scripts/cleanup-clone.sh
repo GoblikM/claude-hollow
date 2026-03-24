@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# cleanup-clone.sh – Smaže izolovaný klon po mergi task větve
+# cleanup-clone.sh – Removes an isolated clone after merging a task branch
 #
-# Použití:
+# Usage:
 #   ./scripts/cleanup-clone.sh <project-dir> <task-slug>
 #
-# Příklad:
-#   ./scripts/cleanup-clone.sh ~/dev/cestynak fix-vowel-highlight
+# Example:
+#   ./scripts/cleanup-clone.sh ~/dev/my-project fix-login-bug
 
 set -euo pipefail
 
@@ -16,7 +16,7 @@ PROJECT_DIR="${1:-}"
 TASK_SLUG="${2:-}"
 
 if [[ -z "$PROJECT_DIR" || -z "$TASK_SLUG" ]]; then
-  echo "Použití: $0 <project-dir> <task-slug>" >&2
+  echo "Usage: $0 <project-dir> <task-slug>" >&2
   exit 1
 fi
 
@@ -26,17 +26,17 @@ CLONE_DIR="$CLONES_DIR/task-$TASK_SLUG"
 ALLOWED_PREFIX=$(realpath "$CLONES_DIR")
 
 if [[ ! -d "$CLONE_DIR" ]]; then
-  echo "ℹ️  Klon '$CLONE_DIR' neexistuje, nic ke smazání"
+  echo "ℹ️  Clone '$CLONE_DIR' does not exist, nothing to delete"
   exit 0
 fi
 
-# Bezpečnostní kontrola
+# Safety check
 CLONE_REAL=$(realpath "$CLONE_DIR")
 if [[ "$CLONE_REAL" != "$ALLOWED_PREFIX"* ]]; then
-  echo "❌ Chyba: '$CLONE_DIR' je mimo povolenou oblast '$ALLOWED_PREFIX'" >&2
+  echo "❌ Error: '$CLONE_DIR' is outside the allowed area '$ALLOWED_PREFIX'" >&2
   exit 1
 fi
 
-echo "🗑️  Mažu klon: $CLONE_DIR"
+echo "🗑️  Deleting clone: $CLONE_DIR"
 rm -rf "$CLONE_DIR"
-echo "✅ Hotovo"
+echo "✅ Done"

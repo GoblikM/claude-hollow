@@ -1,17 +1,17 @@
-# Paralelní běh agentů
+# Parallel agent execution
 
 ## Idea
 
-Umožnit spuštění více task agentů zároveň, aby se více tasků vykonávalo paralelně.
+Allow launching multiple task agents simultaneously, so multiple tasks execute in parallel.
 
-## Co by bylo potřeba
+## What would be needed
 
-1. `cc.sh --background` — flag pro spuštění na pozadí, vrátí PID nebo název logu
-2. Konvence v `task.md` pro označení paralelizovatelných tasků (žádné sdílené soubory, žádná závislost)
-3. Orchestrátor volí, které tasky spustit paralelně a které sekvenčně
+1. `cc.sh --background` — flag for background execution, returns PID or log name
+2. Convention in `task.md` for marking parallelizable tasks (no shared files, no dependencies)
+3. Orchestrator decides which tasks to run in parallel and which sequentially
 
-## Poznámky
+## Notes
 
-- Izolace je už připravená — každý agent má vlastní klon
-- Riziko: merge konflikty při úpravě stejných souborů
-- Vyplatí se jen pro nezávislé tasky (různé soubory, žádné závislosti)
+- Isolation is already in place — each agent has its own clone
+- Risk: merge conflicts when modifying the same files
+- Only worthwhile for independent tasks (different files, no dependencies)

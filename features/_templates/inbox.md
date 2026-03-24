@@ -1,14 +1,14 @@
-# Inbox: [název nápadu]
+# Inbox: [idea name]
 
-Datum zachycení: [YYYY-MM-DD]
+Captured: [YYYY-MM-DD]
 
-## Popis
-Rychlý popis – co přišlo na mysl, jaký problém to řeší.
+## Description
+Quick description — what came to mind, what problem it solves.
 
-## Kontext
-Volitelně – odkud to přišlo, co to vyvolalo.
+## Context
+Optional — where it came from, what triggered it.
 
-## Další zpracování
-- [ ] Přidat jako task do feature: ___
-- [ ] Přidat do icebox
-- [ ] Zahodit (důvod: ___)
+## Next action
+- [ ] Add as task to feature: ___
+- [ ] Move to icebox
+- [ ] Discard (reason: ___)
