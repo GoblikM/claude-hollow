@@ -119,8 +119,10 @@ office/
 
 ### Office
 
-- Všechny změny commitovat přímo na `main`, ihned pushovat
+- Všechny změny commitovat přímo na `main`, ihned pushovat (push probíhá automaticky přes hook)
 - Vždy nový commit, nikdy `--amend` na publishnutém commitu
+- Commit messages jsou **anglicky**
+- Commity **neobsahují** `Co-Authored-By` trailer
 
 ---
 

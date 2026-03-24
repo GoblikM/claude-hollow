@@ -36,6 +36,29 @@ Kdykoli narazíš na chybu v procesu nebo prostor pro zlepšení (workflow, skri
 
 ## Workflow
 
+### 0. Zjišťování požadavků
+
+**Než začneš plánovat tasky**, zeptej se uživatele na doplňující otázky.
+
+Cíl: pochopit záměr dostatečně na to, aby tasky mohly mít správná Acceptance Criteria — ne jen technický popis, ale i herní/UX kontext.
+
+**Jak na to:**
+1. Přečti úvodní popis uživatele
+2. Identifikuj, co ti chybí k napsání kvalitních tasků — nejasnosti, edge cases, UX rozhodnutí, závislosti
+3. Polož 3–5 konkrétních otázek najednou (ne postupně)
+4. Počkej na odpovědi — neplánuj tasky dřív, než je máš
+
+**Na co se typicky ptát (podle kontextu):**
+- **Herní prožitek**: Jak by to mělo vypadat/fungovat z pohledu dítěte? Co cítí/vidí?
+- **Edge cases**: Co se stane při chybné odpovědi / opakovaném průchodu / přerušení?
+- **Scope**: Co explicitně *není* součástí tohoto požadavku?
+- **Závislosti**: Navazuje to na něco existujícího? Může to ovlivnit jiné části hry?
+- **Analytics**: Které události mají smysl sledovat?
+
+Teprve po získání odpovědí přejdi na krok 1.
+
+---
+
 ### 1. Plánování
 - Přečti `{{PROJECT_DIR}}/CLAUDE.md` pro kontext architektury
 - Rozlož požadavek na konkrétní tasky s jasnými acceptance criteria

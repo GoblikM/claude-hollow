@@ -9,3 +9,4 @@ features/**/tasks/**/screenshots/
 # Lokální nastavení
 .env
 .env.local
+.claude/settings.local.json
