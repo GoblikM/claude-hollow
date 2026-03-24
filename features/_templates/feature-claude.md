@@ -37,7 +37,7 @@ If `{{PROJECT_DIR}}/CLAUDE.md` exists, read it before defining tasks.
 - **Game name in UI texts**: always **Češťyňák** (š, ť) — NOT "Čestyňák". In code/identifiers: `cestynak`. Check all user-facing strings before committing.
 - **Environment detection**: `OS.has_feature("cestynak-prod")` / `"cestynak-test"` / `"cestynak-dev"` — no hardcoded checks.
 - **Project Settings**: always `get_setting_with_override()`, never `get_setting()`.
-- **Analytics**: every new feature or important user flow must have analytics events planned from the start.
+- **Analytics**: every new feature or important user flow must have analytics events planned from the start. When writing a task, check: what actions will the user perform? What do we need to measure? Add `analytics_events.gd` and its callers to the task scope. Pattern: `AnalyticsEvents.trial_activated()` calls `user_set({"Trial Češťyňák 1": true})` + `_send_event(...)`. User properties (e.g. "has trial", "has license") → `user_set`; events (what the user did) → `_send_event`.
 
 ---
 
