@@ -5,6 +5,7 @@
 - **Component:** [e.g. frontend | backend | api | all]
 - **Branch:** feature/[feature-name]
 - **Estimated complexity:** S | M | L
+- **Pipeline:** task-agent → code-reviewer | + architect | + tester
 
 ## Scope
 Files/directories the agent may change:

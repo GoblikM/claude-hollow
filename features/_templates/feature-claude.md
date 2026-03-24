@@ -76,28 +76,58 @@ All items must be satisfied:
 - [ ] `task.md` exists and has Scope and Acceptance Criteria filled in
 - [ ] Feature branch `{{FEATURE_BRANCH}}` exists in the project
 
-### 3. Pipeline: implement → review → test
+### 3. Pipeline
+
+The pipeline is **flexible** — choose agents based on task complexity. Not every task needs every agent.
+
+| Agent | When to use |
+|-------|-------------|
+| `@architect` | Complex tasks — new module, API design, non-trivial refactor, unclear approach |
+| `@task-agent` | **Always** — implements the changes |
+| `@code-reviewer` | **Always** — reviews the diff |
+| `@tester` | When `## Tests` in task.md says `Required: yes` |
+
+**Simple task** (bug fix, small change, config):
+```
+@task-agent → @code-reviewer
+```
+
+**Standard task** (new feature, refactor with tests):
+```
+@task-agent → @code-reviewer → @tester
+```
+
+**Complex task** (new module, API, unclear design):
+```
+@architect → @task-agent → @code-reviewer → @tester
+```
+
+---
+
+**Step 0 — Architecture (if needed):**
+```
+@architect Review task/<slug> in workspace {{WORKSPACE_DIR}}
+```
+Read `tasks/<slug>/plan.md` before proceeding. Adjust task scope or AC if the plan reveals issues.
 
 **Step 1 — Implementation:**
-Pass the task.md content as a prompt to the subagent:
 ```
-@task-agent [task.md content]
+@task-agent [task.md content + optionally: plan.md content]
 ```
 
 **Step 2 — Code review:**
-After implementation is complete:
 ```
 @code-reviewer Review task/<slug> in workspace {{WORKSPACE_DIR}}
 ```
-- If `CHANGES REQUESTED` → go back to step 1 with specific feedback from the review
+- If `CHANGES REQUESTED` → go back to step 1 with specific feedback
 - If `APPROVED` → continue
 
-**Step 3 — Tests:**
+**Step 3 — Tests (if required):**
 ```
 @tester Test task/<slug> in workspace {{WORKSPACE_DIR}}
 ```
 - If `TESTS FAIL` → go back to step 1 with failure description
-- If `TESTS PASS` (or `SKIP` with justification) → continue
+- If `TESTS PASS` or `SKIP` → continue
 
 ### 4. Merge after successful pipeline
 
