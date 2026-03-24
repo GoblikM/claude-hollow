@@ -50,56 +50,54 @@ _pick() {
   local cur=0
   local count=${#items[@]}
 
-  # Save terminal state
-  tput civis 2>/dev/null  # hide cursor
+  [[ $count -eq 0 ]] && { echo ""; return; }
+
   local old_stty
-  old_stty=$(stty -g)
-  stty -echo -icanon min 1 time 0
+  old_stty=$(stty -g 2>/dev/null || true)
 
   _pick_cleanup() {
-    stty "$old_stty"
-    tput cnorm 2>/dev/null  # show cursor
+    [[ -n "$old_stty" ]] && stty "$old_stty" 2>/dev/null || true
+    tput cnorm 2>/dev/null || true
   }
   trap _pick_cleanup RETURN INT TERM
 
-  _pick_draw() {
-    # Move cursor up to redraw (skip on first draw)
-    if [[ "${_pick_drawn:-0}" -eq 1 ]]; then
-      tput cuu $(( count + 2 )) 2>/dev/null
-    fi
-    _pick_drawn=1
+  tput civis 2>/dev/null || true
+  [[ -n "$old_stty" ]] && stty -echo -icanon min 1 time 0 2>/dev/null || true
 
-    echo "  $title"
+  _pick_draw() {
+    printf '\033[u'  # restore saved cursor position
+    printf "  %s\n" "$title"
     for i in "${!items[@]}"; do
       if [[ $i -eq $cur ]]; then
-        printf "  \033[1;36m❯ %s\033[0m\n" "${items[$i]}"
+        printf "  \033[1;36m❯ %s\033[0m\033[K\n" "${items[$i]}"
       else
-        printf "    %s\n" "${items[$i]}"
+        printf "    %s\033[K\n" "${items[$i]}"
       fi
     done
-    printf "\n  \033[2m↑↓ navigate   Enter select   q quit\033[0m\n"
+    printf "\n  \033[2m↑↓ navigate   Enter select   q quit\033[0m\033[K"
   }
 
   echo ""
+  printf '\033[s'  # save cursor position here
   _pick_draw
 
   local result=""
   while true; do
     local key
-    IFS= read -r -s -n1 key
+    IFS= read -r -s -n1 key 2>/dev/null || true
 
-    # Escape sequences (arrows)
     if [[ "$key" == $'\x1b' ]]; then
       local seq
-      IFS= read -r -s -n2 -t 0.1 seq || true
+      IFS= read -r -s -n2 -t 0.1 seq 2>/dev/null || true
       case "$seq" in
-        '[A'|'OA') (( cur > 0 )) && (( cur-- )) ;;          # up
-        '[B'|'OB') (( cur < count - 1 )) && (( cur++ )) ;;  # down
+        '[A'|'OA') (( cur > 0 )) && (( cur-- )) ;;
+        '[B'|'OB') (( cur < count - 1 )) && (( cur++ )) ;;
+        '')        break ;;  # lone Escape = cancel
       esac
-    elif [[ "$key" == $'\x0a' || "$key" == $'\x0d' ]]; then  # Enter
+    elif [[ "$key" == $'\x0a' || "$key" == $'\x0d' ]]; then
       result="${items[$cur]}"
       break
-    elif [[ "$key" == 'q' || "$key" == $'\x1b' ]]; then      # q or Esc
+    elif [[ "$key" == 'q' ]]; then
       break
     elif [[ "$key" == 'k' ]]; then
       (( cur > 0 )) && (( cur-- ))
@@ -111,7 +109,7 @@ _pick() {
   done
 
   echo ""
-  echo "$result"
+  printf '%s\n' "$result"
 }
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
