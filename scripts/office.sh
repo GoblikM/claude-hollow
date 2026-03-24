@@ -129,7 +129,7 @@ _create_new_project() {
   echo ""
   echo "Creating new project '$project_name' at: $project_path"
   mkdir -p "$project_path"
-  git -C "$project_path" init --quiet
+  git -C "$project_path" init -b main --quiet
   git -C "$project_path" commit --allow-empty -m "chore: initial commit" --quiet
 
   project_path=$(realpath "$project_path")

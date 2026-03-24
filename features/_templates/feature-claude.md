@@ -20,7 +20,7 @@ If `{{PROJECT_DIR}}/CLAUDE.md` exists, read it before defining tasks.
 
 ## Your role
 
-**NEVER implement code yourself.** All code changes are made exclusively by agents launched via `cc.sh`. No exceptions — not even for trivial changes or one-line fixes.
+**NEVER implement code yourself.** All code changes are made exclusively by subagents (`@task-agent`, `@code-reviewer`, `@tester`). No exceptions — not even for trivial changes or one-line fixes.
 
 You may only:
 - Create and edit tasks, docs (in `features/{{FEATURE_NAME}}/`)
@@ -60,6 +60,7 @@ Only move to step 1 after receiving answers.
 
 ### 1. Planning
 - Read `{{PROJECT_DIR}}/CLAUDE.md` for architecture context (if it exists)
+- **If the project is new/empty** (no `CLAUDE.md`, no source files): suggest creating a `project-setup` task first — scaffold the project structure and create `{{PROJECT_DIR}}/CLAUDE.md` with conventions, tech stack, and how to run tests
 - Break down the requirement into concrete tasks with clear acceptance criteria
 - Create `tasks/<slug>/task.md` for each task
 
@@ -101,7 +102,7 @@ git -C {{WORKSPACE_DIR}} branch -d task/<slug>
 
 Archive the task:
 ```bash
-./scripts/task-done.sh {{FEATURE_NAME}} <slug>
+../../scripts/task-done.sh {{FEATURE_NAME}} <slug>
 ```
 
 ### 5. Feature is complete when
