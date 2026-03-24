@@ -1,10 +1,10 @@
-# Worktrees a klony agentů
-features/*/workspace/
-../.clones/
+# Pracovní data (lokální, netrackovaná)
+inbox/
+features/*
+!features/_templates/
 
-# Logy agentů
-features/**/tasks/**/run-*.log
-features/**/tasks/**/screenshots/
+# Worktrees a klony agentů
+../.clones/
 
 # Lokální nastavení
 .env
