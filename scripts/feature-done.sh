@@ -74,13 +74,18 @@ fi
 echo "🧹 Cleaning up feature: $FEATURE_SLUG"
 
 # Remove worktree
-if [[ -d "$PROJECT_DIR" ]] && git -C "$PROJECT_DIR" worktree list 2>/dev/null | grep -q "$WORKTREE_DIR"; then
-  echo "   Removing worktree: $WORKTREE_DIR"
-  git -C "$PROJECT_DIR" worktree remove "$WORKTREE_DIR" --force
-  echo "   ✅ Worktree removed"
-elif [[ -d "$WORKTREE_DIR" ]]; then
-  echo "   ⚠️  Worktree directory exists but is not registered — removing manually"
-  rm -rf "$WORKTREE_DIR"
+if [[ -d "$PROJECT_DIR" ]]; then
+  if git -C "$PROJECT_DIR" worktree list 2>/dev/null | grep -q "$WORKTREE_DIR"; then
+    echo "   Removing worktree: $WORKTREE_DIR"
+    git -C "$PROJECT_DIR" worktree remove "$WORKTREE_DIR" --force
+    echo "   ✅ Worktree removed"
+  elif [[ -d "$WORKTREE_DIR" ]]; then
+    echo "   Removing worktree directory: $WORKTREE_DIR"
+    rm -rf "$WORKTREE_DIR"
+    echo "   ✅ Worktree directory removed"
+  fi
+  # Prune stale entries (catches old path structures or already-deleted directories)
+  git -C "$PROJECT_DIR" worktree prune 2>/dev/null || true
 fi
 
 # Delete feature branch
