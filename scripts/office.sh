@@ -82,7 +82,7 @@ _show_projects() {
 
 _add_existing_project() {
   echo ""
-  read -r -p "Path to existing git repository: " project_path
+  read -e -r -p "Path to existing git repository: " project_path
   project_path=$(eval echo "$project_path")  # expand ~
 
   if [[ ! -d "$project_path/.git" ]]; then
@@ -113,7 +113,7 @@ _create_new_project() {
   local slug
   slug=$(slugify "$project_name")
 
-  read -r -p "Where to create it (directory path): " project_path
+  read -e -r -p "Where to create it (directory path): " project_path
   project_path=$(eval echo "$project_path")  # expand ~
 
   if [[ -z "$project_path" ]]; then
