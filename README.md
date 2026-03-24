@@ -21,17 +21,17 @@ The orchestrator **never writes code itself** — that is exclusively the role o
 
 **Linux / macOS:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/cestynak-hollow/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/cestynak-hollow/install/unix.sh | bash
 ```
 
 **Windows CMD:**
 ```cmd
-curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/cestynak-hollow/install.cmd -o install.cmd && install.cmd && del install.cmd
+curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/cestynak-hollow/install/windows.cmd -o install.cmd && install.cmd && del install.cmd
 ```
 
 **Windows PowerShell:**
 ```powershell
-irm https://raw.githubusercontent.com/GoblikM/claude-hollow/cestynak-hollow/install.ps1 | iex
+irm https://raw.githubusercontent.com/GoblikM/claude-hollow/cestynak-hollow/install/windows.ps1 | iex
 ```
 
 Run the command from the directory where you want the repo cloned. Restart your terminal after install.
