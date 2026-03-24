@@ -47,7 +47,9 @@ _list_features() {
   local project_slug="$1"
   local feature_base="$OFFICE_DIR/features/$project_slug"
   [[ -d "$feature_base" ]] || return
-  find "$feature_base" -maxdepth 1 -mindepth 1 -type d ! -name '_*' -printf '%f\n' 2>/dev/null | sort
+  while IFS= read -r name; do
+    [[ -d "$feature_base/$name/workspace" ]] && echo "$name"
+  done < <(find "$feature_base" -maxdepth 1 -mindepth 1 -type d ! -name '_*' -printf '%f\n' 2>/dev/null | sort)
 }
 
 # ─── Screens ──────────────────────────────────────────────────────────────────
