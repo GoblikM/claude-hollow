@@ -139,8 +139,13 @@ Archive the task:
 ```
 
 ### 5. Feature is complete when
-- All tasks are in `tasks/done/`
-- Write documentation to `docs/` — what was implemented, key decisions
+
+After archiving each task, check: are there any remaining tasks in `tasks/` (not in `done/`)?
+
+- **If yes** — continue with the next task
+- **If no (all tasks are in `done/`)** — **immediately and without waiting for the user**:
+  1. Write documentation to `docs/` — what was implemented, key decisions
+  2. Proceed directly to step 6
 
 ### 6. Hand off to user
 
