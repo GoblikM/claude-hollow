@@ -38,8 +38,9 @@ The orchestrator may only:
 
 ### Pipeline for each task
 
-Each task goes through three subagents in order:
+Each task goes through the following subagents in order:
 
+0. **`@architect`** *(optional)* — reads task + existing code, writes `tasks/<slug>/plan.md`; use for complex tasks, new modules, non-trivial refactors
 1. **`@task-agent`** — implements changes, commits to `task/<slug>` branch
 2. **`@code-reviewer`** — reviews the diff, verifies AC and conventions; returns `APPROVED` or `CHANGES REQUESTED`
 3. **`@tester`** — runs tests; returns `TESTS PASS` or `TESTS FAIL`
@@ -52,8 +53,15 @@ Whenever the orchestrator encounters a process error or room for improvement (wo
 
 ### Starting the feature orchestrator
 
-Started by the **user from the terminal** (not by the orchestrator inside a Claude session):
+Started by the **user from the terminal** (not by the orchestrator inside a Claude session).
 
+**Via interactive menu (recommended):**
+```bash
+claude-hollow
+```
+Select a project → Start new feature.
+
+**Via script directly:**
 ```bash
 ./scripts/feature.sh <feature-name> --project <path-to-project>
 ```
@@ -61,7 +69,7 @@ Started by the **user from the terminal** (not by the orchestrator inside a Clau
 On first run, creates `features/<project>/<feature>/` (GTD structure, feature branch, worktree), generates `CLAUDE.md`, and starts Claude as the feature orchestrator.
 On subsequent runs, opens the existing feature.
 
-The feature `CLAUDE.md` always contains a **Key context** table — project repository, worktree, branch. The orchestrator must read it as the first step.
+The feature `CLAUDE.md` always contains a **Key context** table — project repository, worktree, branch, main branch. The orchestrator must read it as the first step.
 
 ### Monitoring subagents
 
@@ -72,7 +80,7 @@ Subagents run directly in the Claude session — their output is visible in real
 ## GTD architecture
 
 ```
-office/
+claude-hollow/
 ├── features/
 │   └── <project>/
 │       └── <feature>/
@@ -115,10 +123,11 @@ office/
 - `task/<name>` — agent branches; created by `@task-agent` automatically; always from feature branch, never from master
 - After merging a task branch into the feature branch, delete it immediately
 - `master`/`main` — only via reviewed merge; agents must not run directly from master
-- Merge requests are created **exclusively by the user manually** — the orchestrator never creates them
-- The orchestrator only informs the user that the feature is ready, but does not create the MR
+- At feature completion, the orchestrator detects whether a remote exists and offers the user: auto MR creation, push only, or manual
+- If no remote: offers local auto-merge or manual
+- The user always makes the final call — the orchestrator never acts without asking
 
-### Office
+### Claude Hollow
 
 - All changes committed directly to `main`, pushed immediately (push happens automatically via hook)
 - Always a new commit, never `--amend` on a published commit
