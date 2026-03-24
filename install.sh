@@ -7,7 +7,7 @@
 set -euo pipefail
 
 REPO_URL="https://github.com/GoblikM/claude-hollow.git"
-BRANCH="main"
+BRANCH="cestynak-hollow"
 DEST="$PWD/claude-hollow"
 
 echo "Cloning Claude Hollow into $DEST ..."

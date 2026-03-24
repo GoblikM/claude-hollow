@@ -19,15 +19,22 @@ The orchestrator **never writes code itself** — that is exclusively the role o
 
 ## Setup
 
+**Linux / macOS:**
 ```bash
-git clone -b cestynak-hollow git@github.com:GoblikM/claude-hollow.git cestynak-hollow
-cd cestynak-hollow
-./install.sh
+curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/cestynak-hollow/install.sh | bash
 ```
 
-This creates a symlink in `~/.local/bin/claude-hollow` so you can type `claude-hollow` from anywhere.
+**Windows CMD:**
+```cmd
+curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/cestynak-hollow/install.cmd -o install.cmd && install.cmd && del install.cmd
+```
 
-> If `~/.local/bin` is not in your PATH, `install.sh` will tell you what to add to `.bashrc`/`.zshrc`.
+**Windows PowerShell:**
+```powershell
+irm https://raw.githubusercontent.com/GoblikM/claude-hollow/cestynak-hollow/install.ps1 | iex
+```
+
+Run the command from the directory where you want the repo cloned. Restart your terminal after install.
 
 ## Usage
 

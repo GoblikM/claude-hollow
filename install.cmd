@@ -5,7 +5,7 @@
 ::   curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/main/install.cmd -o install.cmd && install.cmd && del install.cmd
 
 set REPO_URL=https://github.com/GoblikM/claude-hollow.git
-set BRANCH=main
+set BRANCH=cestynak-hollow
 set DEST=%CD%\claude-hollow
 
 echo Cloning Claude Hollow into %DEST% ...

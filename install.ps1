@@ -4,7 +4,7 @@
 #   irm https://raw.githubusercontent.com/GoblikM/claude-hollow/main/install.ps1 | iex
 
 $REPO_URL = "https://github.com/GoblikM/claude-hollow.git"
-$BRANCH   = "main"
+$BRANCH$BRANCH   = "cestynak-hollow"
 $DEST     = Join-Path (Get-Location) "claude-hollow"
 
 Write-Host "Cloning Claude Hollow into $DEST ..."
