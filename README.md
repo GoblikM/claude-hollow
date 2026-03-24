@@ -86,7 +86,8 @@ Select a project → see its features → start or resume one.
 ```
 cestynak-hollow/
 ├── CLAUDE.md                   # Orchestrator context
-├── install.sh                  # Installs the claude-hollow command
+├── install/                    # One-liner install scripts (unix.sh, windows.cmd, windows.ps1)
+├── claude-hollow.bat           # Windows runtime launcher
 ├── features/
 │   ├── _templates/             # Templates: task, issue, inbox, feature docs
 │   └── <project-name>/         # Local only — not tracked in git
