@@ -36,9 +36,9 @@ You are a code reviewer. You review task implementations in the project.
 - No hardcoded values that should be constants or configuration
 
 ### Tests
-- Check `## Tests` in task.md — is `Required: yes` or `no`?
-- If **yes**: are test files present in the diff? If not → FAIL
-- If **no**: accepted, no further check needed
+- Are test files present in the diff?
+- If no tests and the task contains logic → FAIL (tests are always expected)
+- If no tests and it's genuinely untestable (pure config, generated file) → OK, tester will handle SKIP
 
 ### Scope
 - Did the agent stay within the Scope from task.md?

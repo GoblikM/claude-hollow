@@ -5,7 +5,7 @@
 - **Component:** [e.g. frontend | backend | api | all]
 - **Branch:** feature/[feature-name]
 - **Estimated complexity:** S | M | L
-- **Pipeline:** task-agent → code-reviewer | + architect | + tester
+- **Pipeline:** task-agent → code-reviewer → tester | + architect
 
 ## Scope
 Files/directories the agent may change:
@@ -26,11 +26,8 @@ How we know the task is done:
 Optional — context, constraints, implementation suggestions.
 
 ## Tests
-<!-- Does this task require tests? The orchestrator decides here.
-     If yes: describe what to test and where the test files should go.
-     If no: write "N/A" and a brief reason (e.g. "pure UI change", "config only"). -->
-
-**Required:** yes / no
+<!-- Describe what to test and where. Tests are always expected.
+     If genuinely untestable (pure config, generated file), tester will SKIP with reason. -->
 
 **What to test:**
 - ...

@@ -83,16 +83,11 @@ The pipeline is **flexible** — choose agents based on task complexity. Not eve
 | Agent | When to use |
 |-------|-------------|
 | `@architect` | Complex tasks — new module, API design, non-trivial refactor, unclear approach |
-| `@task-agent` | **Always** — implements the changes |
-| `@code-reviewer` | **Always** — reviews the diff |
-| `@tester` | When `## Tests` in task.md says `Required: yes` |
+| `@task-agent` | **Always** |
+| `@code-reviewer` | **Always** |
+| `@tester` | **Always** — reports SKIP only if genuinely untestable |
 
-**Simple task** (bug fix, small change, config):
-```
-@task-agent → @code-reviewer
-```
-
-**Standard task** (new feature, refactor with tests):
+**Simple task** (bug fix, small change):
 ```
 @task-agent → @code-reviewer → @tester
 ```
