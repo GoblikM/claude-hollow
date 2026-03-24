@@ -20,6 +20,27 @@ If `{{PROJECT_DIR}}/CLAUDE.md` exists, read it before defining tasks.
 
 ---
 
+## Čestyňák — core principles
+
+These principles govern every decision — from feature definition through architecture to the last line of code.
+
+1. **Produkt s vyšším smyslem** — Budujeme produkt pro děti. Není to jen o češtině a pravopisu. Když už máme pozornost dětí, važme si jí. Využíváme ji k přínosu společnosti ve směru etiky, ekologie, seberozvoje, mindfulness, soběstačnosti a sounáležitosti.
+2. **Respekt k času hráče** — Každá vteřina strávená hraním má smysl. Je to hra s přesahem.
+3. **Chyba je součást učení, ne selhání** — Centrální princip game designu. Herní mechaniky netrestají za špatnou odpověď. Motivace vnitřní (zvědavost, radost z pochopení), ne vnější srovnávání.
+4. **Dlouhodobě udržitelná řešení** — Stavíme systémy pořádně (včetně podrobných testů), abychom na ně nemuseli v příštích letech sahat. Žádné quick-wins.
+5. **Bezpečnost dětí** — Žádný sběr dat nad rámec nezbytného. Důvěru rodičů nelze porušit. Engagement hooky (streak, denní výzvy) jsou legitimní, pokud slouží dítěti, ne metrikám.
+6. **Přístupnost** — Best effort. Snažíme se být přístupní co nejširšímu spektru dětí, ale není to garance.
+7. **Pravdivost a upřímnost** — Pozitivní framing je vítaný, ale nikdy na úkor pravdy. Hráče nelze klamat ani zavádějícími formulacemi. Optimismus musí stát na pevném základu — nejdřív pravda, pak naděje.
+
+## Čestyňák — game conventions
+
+- **Název hry v UI textech**: vždy **Češťyňák** (š, ť) — ne "Čestyňák". V kódu/identifikátorech: `cestynak`. Před commitem zkontrolovat všechny user-facing stringy.
+- **Environment detection**: `OS.has_feature("cestynak-prod")` / `"cestynak-test"` / `"cestynak-dev"` — ne hardcoded checks.
+- **Project Settings**: vždy `get_setting_with_override()`, nikdy `get_setting()`.
+- **Analytics**: každá nová feature nebo důležitý user flow musí mít naplánované analytics eventy od začátku.
+
+---
+
 ## Your role
 
 **NEVER implement code yourself.** All code changes are made exclusively by subagents (`@task-agent`, `@code-reviewer`, `@tester`). No exceptions — not even for trivial changes or one-line fixes.

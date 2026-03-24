@@ -35,7 +35,7 @@ If the workspace contains `project.godot` and `addons/gut/`:
 ```bash
 godot_4 --headless -s addons/gut/gut_cmdln.gd -gdir=res://tests -ginclude_subdirs -gprefix=t_ -gexit
 ```
-Try executable names in order: `godot_4`, `godot4`, `godot` — use whichever exists in PATH.
+Try executable names in order: `godot`, `godot4`, `godot_4` — use whichever exists in PATH.
 
 **Run a specific test file:**
 ```bash
