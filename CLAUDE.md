@@ -1,8 +1,8 @@
-# CLAUDE.md – Office, AI agent orchestration center
+# CLAUDE.md – Claude Hollow, AI agent orchestration system
 
 ## Project
 
-**Office** is an orchestration system for developing any project using AI agents.
+**Claude Hollow** is an orchestration system for developing any project using AI agents.
 
 Project repository: passed via `--project` when running `feature.sh`, or stored in `features/<project>/<feature>/CLAUDE.md`.
 Project architecture: `<project-dir>/CLAUDE.md` (if it exists)

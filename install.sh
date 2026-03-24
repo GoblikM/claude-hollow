@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# install.sh – Installs the `office` command globally
+# install.sh – Installs the `claude-hollow` command globally
 #
 # Creates a symlink in ~/.local/bin/claude-hollow pointing to this repo's office.sh.
-# After running this, you can type `office` from anywhere.
+# After running this, you can type `claude-hollow` from anywhere.
 
 set -euo pipefail
 

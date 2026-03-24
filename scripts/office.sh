@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# office.sh – Main entry point for Office
+# office.sh – Main entry point for Claude Hollow
 #
 # Usage:
 #   ./scripts/office.sh
@@ -134,7 +134,7 @@ _screen_project() {
 
     clear
     echo ""
-    echo "  🏠  Office  ›  $project_name"
+    echo "  🏠  Claude Hollow  ›  $project_name"
     echo "  ──────────────────────────────────────────"
     echo "  $(_short_path "$project_path")"
     echo ""
