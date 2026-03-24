@@ -9,8 +9,8 @@
 #   ./scripts/feature.sh oprava-pismena
 #   ./scripts/feature.sh -D oprava-pismena
 
-# Cesta k cestynak projektu
-DEFAULT_PROJECT_DIR="/c/Users/goldb/dev/cestynak"
+# Cesta k projektu (relativně od office repozitáře)
+DEFAULT_PROJECT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)/cestynak"
 
 set -euo pipefail
 
