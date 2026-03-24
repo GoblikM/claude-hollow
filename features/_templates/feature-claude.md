@@ -12,6 +12,7 @@ You work in `features/{{FEATURE_NAME}}/`.
 | **Project repository** | `{{PROJECT_DIR}}` |
 | **Workspace (worktree)** | `{{WORKSPACE_DIR}}` |
 | **Feature branch** | `{{FEATURE_BRANCH}}` |
+| **Main branch** | `{{MAIN_BRANCH}}` |
 | **Project architecture** | `{{PROJECT_DIR}}/CLAUDE.md` |
 
 If `{{PROJECT_DIR}}/CLAUDE.md` exists, read it before defining tasks.
@@ -142,14 +143,22 @@ Archive the task:
 - Write documentation to `docs/` — what was implemented, key decisions
 
 ### 6. Hand off to user
-Merge requests are created **exclusively by the user manually** — never create one yourself.
 
-Inform the user:
-1. Branch `{{FEATURE_BRANCH}}` is ready — merge it into main manually
-2. After merging, run cleanup:
+All tasks are in `done/` and docs are written. Ask the user:
+
+> Feature `{{FEATURE_BRANCH}}` is complete. Should I merge it into `{{MAIN_BRANCH}}` and clean up, or will you do it manually?
+> - **[a] Auto** — I'll merge and clean up
+> - **[m] Manual** — I'll do it myself later (use "Feature done" in claude-hollow menu)
+
+**If auto chosen:**
 ```bash
+git -C {{PROJECT_DIR}} checkout {{MAIN_BRANCH}}
+git -C {{PROJECT_DIR}} merge {{FEATURE_BRANCH}}
 ../../../scripts/feature-done.sh {{FEATURE_NAME}}
 ```
+
+**If manual chosen:**
+Inform the user: after merging, select "Feature done" in the claude-hollow project menu to clean up the worktree and branch.
 
 ---
 

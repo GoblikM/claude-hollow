@@ -131,6 +131,7 @@ fi
 
 PROJECT_SLUG=$(slugify "$(basename "$PROJECT_DIR")")
 FEATURE_DIR="$OFFICE_DIR/features/$PROJECT_SLUG/$FEATURE_SLUG"
+MAIN_BRANCH=$(_detect_main_branch "$PROJECT_DIR")
 
 # ─── GTD structure initialization ────────────────────────────────────────────
 
@@ -142,8 +143,7 @@ else
   echo "🏗️  Initializing feature: $FEATURE_SLUG"
   mkdir -p "$FEATURE_DIR"/{tasks/done,blocked,icebox,docs}
 
-  # Detect main branch
-  MAIN_BRANCH=$(_detect_main_branch "$PROJECT_DIR")
+  # Main branch already detected above
   BASE_BRANCH="${FROM_BRANCH:-$MAIN_BRANCH}"
 
   echo "🌿 Creating feature branch: $FEATURE_BRANCH (from $BASE_BRANCH)"
@@ -174,6 +174,7 @@ else
       -e "s|{{FEATURE_BRANCH}}|$FEATURE_BRANCH|g" \
       -e "s|{{PROJECT_DIR}}|$PROJECT_DIR|g" \
       -e "s|{{PROJECT_SLUG}}|$PROJECT_SLUG|g" \
+      -e "s|{{MAIN_BRANCH}}|$MAIN_BRANCH|g" \
       -e "s|{{WORKSPACE_DIR}}|$WORKTREE_DIR|g" \
       -e "s|{{DATE}}|$(date +%Y-%m-%d)|g" \
       "$OFFICE_DIR/features/_templates/feature-claude.md" \
