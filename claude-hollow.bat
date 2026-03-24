@@ -6,4 +6,5 @@ for /f "delims=" %%i in ('where bash 2^>nul') do (
 echo Error: bash not found. Please install Git for Windows: https://git-scm.com
 exit /b 1
 :run
-"%BASH%" --login "%~dp0scripts/hollow.sh"
+cd /d "%~dp0"
+"%BASH%" --login scripts/hollow.sh
