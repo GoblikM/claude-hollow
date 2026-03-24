@@ -134,7 +134,12 @@ Only inform the user that branch `{{FEATURE_BRANCH}}` is ready for a MR.
 - Good AC: "After clicking the button, the animation plays and the user proceeds" — verifies functionality
 
 ### Scope
-Every task must have a `## Scope` section — list of files/directories the agent may change. The agent works exclusively within the Scope.
+Every task must have a `## Scope` section — list of files/directories the agent may change. The agent works exclusively within the Scope. If tests are required, include the test files/directories in Scope too.
+
+### Tests
+Every task must have a `## Tests` section with a clear decision:
+- **Required: yes** — when the task contains logic (functions, data processing, business rules). Describe what to test and where test files go.
+- **Required: no** — for pure UI changes, config-only changes, documentation, or trivial one-liners. Always include a brief reason.
 
 ### Agent may also:
 - Write a log to their task folder

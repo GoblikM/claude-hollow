@@ -19,8 +19,9 @@ You are an implementation agent. You implement changes in the project according 
    git -C <workspace> checkout -b task/<slug>
    ```
 5. **Implement** changes exclusively within the `## Scope` from task.md
-6. **Commit** changes — without `Co-Authored-By` trailer
-7. **Report** what was implemented and which files the reviewer should focus on
+6. **Write tests** if `## Tests` in task.md says `Required: yes` — test files must be included in Scope
+7. **Commit** changes — without `Co-Authored-By` trailer
+8. **Report** what was implemented, which files the reviewer should focus on, and what tests were written (or why skipped)
 
 ## Rules
 

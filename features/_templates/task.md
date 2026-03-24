@@ -25,5 +25,16 @@ How we know the task is done:
 Optional — context, constraints, implementation suggestions.
 
 ## Tests
-- [ ] Unit tests written and passing
-- [ ] Manually verified: [description]
+<!-- Does this task require tests? The orchestrator decides here.
+     If yes: describe what to test and where the test files should go.
+     If no: write "N/A" and a brief reason (e.g. "pure UI change", "config only"). -->
+
+**Required:** yes / no
+
+**What to test:**
+- ...
+
+**Test file location:**
+```
+tests/...
+```

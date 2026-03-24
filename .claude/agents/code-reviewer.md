@@ -35,6 +35,11 @@ You are a code reviewer. You review task implementations in the project.
 - Error handling where it makes sense
 - No hardcoded values that should be constants or configuration
 
+### Tests
+- Check `## Tests` in task.md — is `Required: yes` or `no`?
+- If **yes**: are test files present in the diff? If not → FAIL
+- If **no**: accepted, no further check needed
+
 ### Scope
 - Did the agent stay within the Scope from task.md?
 
