@@ -39,78 +39,6 @@ _registry_remove() {
   echo "$tmp" > "$REGISTRY"
 }
 
-# ─── Arrow-key picker ─────────────────────────────────────────────────────────
-#
-# _pick <title> <item1> <item2> ...
-# Prints the selected item to stdout, or empty string if cancelled.
-#
-_pick() {
-  local title="$1"; shift
-  local items=("$@")
-  local cur=0
-  local count=${#items[@]}
-
-  [[ $count -eq 0 ]] && { echo ""; return; }
-
-  local old_stty
-  old_stty=$(stty -g 2>/dev/null || true)
-
-  _pick_cleanup() {
-    [[ -n "$old_stty" ]] && stty "$old_stty" 2>/dev/null || true
-    tput cnorm 2>/dev/null || true
-  }
-  trap _pick_cleanup RETURN INT TERM
-
-  tput civis 2>/dev/tty || true
-  [[ -n "$old_stty" ]] && stty -echo -icanon min 1 time 0 2>/dev/null || true
-
-  _pick_draw() {
-    printf '\033[u'  >/dev/tty
-    printf "  %s\n" "$title" >/dev/tty
-    for i in "${!items[@]}"; do
-      if [[ $i -eq $cur ]]; then
-        printf "  \033[1;36m❯ %s\033[0m\033[K\n" "${items[$i]}" >/dev/tty
-      else
-        printf "    %s\033[K\n" "${items[$i]}" >/dev/tty
-      fi
-    done
-    printf "\n  \033[2m↑↓ navigate   Enter select   q quit\033[0m\033[K" >/dev/tty
-  }
-
-  printf '\n\033[s' >/dev/tty  # blank line + save cursor position
-  _pick_draw
-
-  local result=""
-  while true; do
-    local key
-    IFS= read -r -s -n1 key </dev/tty 2>/dev/null || true
-
-    if [[ "$key" == $'\x1b' ]]; then
-      local seq
-      IFS= read -r -s -n2 -t 0.1 seq </dev/tty 2>/dev/null || true
-      case "$seq" in
-        '[A'|'OA') (( cur > 0 )) && (( cur-- )) ;;
-        '[B'|'OB') (( cur < count - 1 )) && (( cur++ )) ;;
-        '')        break ;;  # lone Escape = cancel
-      esac
-    elif [[ "$key" == $'\x0a' || "$key" == $'\x0d' ]]; then
-      result="${items[$cur]}"
-      break
-    elif [[ "$key" == 'q' ]]; then
-      break
-    elif [[ "$key" == 'k' ]]; then
-      (( cur > 0 )) && (( cur-- ))
-    elif [[ "$key" == 'j' ]]; then
-      (( cur < count - 1 )) && (( cur++ ))
-    fi
-
-    _pick_draw
-  done
-
-  printf '\n' >/dev/tty
-  printf '%s\n' "$result"
-}
-
 # ─── Helpers ──────────────────────────────────────────────────────────────────
 
 _short_path() { echo "${1/#$HOME/~}"; }
@@ -129,18 +57,11 @@ _screen_main() {
     local entries
     entries=$(_registry_list)
 
-    local names=() paths=() labels=()
+    local names=() paths=()
     if [[ -n "$entries" ]]; then
       while IFS='|' read -r name path; do
         names+=("$name")
         paths+=("$path")
-        local display
-        display=$(_short_path "$path")
-        if [[ -d "$path/.git" ]]; then
-          labels+=("$(printf '%-20s %s' "$name" "$display")")
-        else
-          labels+=("$(printf '%-20s %s  ⚠️  not found' "$name" "$display")")
-        fi
       done <<< "$entries"
     fi
 
@@ -149,39 +70,45 @@ _screen_main() {
     echo "  🏠  Claude Hollow"
     echo "  ──────────────────────────────────────────"
 
-    local actions=("+ Add existing project" "* Create new project")
-    [[ ${#names[@]} -gt 0 ]] && actions+=("- Remove project")
-    actions+=("  Quit")
+    if [[ ${#names[@]} -eq 0 ]]; then
+      echo ""
+      echo "  No projects yet."
+    else
+      echo ""
+      echo "  Projects"
+      echo ""
+      for i in "${!names[@]}"; do
+        local display
+        display=$(_short_path "${paths[$i]}")
+        if [[ -d "${paths[$i]}/.git" ]]; then
+          printf "  [%d] %-20s %s\n" "$(( i + 1 ))" "${names[$i]}" "$display"
+        else
+          printf "  [%d] %-20s %s  ⚠️  not found\n" "$(( i + 1 ))" "${names[$i]}" "$display"
+        fi
+      done
+    fi
 
-    local all_items=()
-    [[ ${#labels[@]} -gt 0 ]] && all_items+=("${labels[@]}")
-    [[ ${#labels[@]} -gt 0 ]] && all_items+=("──────────────────────────────────────")
-    all_items+=("${actions[@]}")
+    echo ""
+    echo "  ──────────────────────────────────────────"
+    echo "  [a] Add existing project"
+    echo "  [n] Create new project"
+    [[ ${#names[@]} -gt 0 ]] && echo "  [r] Remove project"
+    echo "  [q] Quit"
+    echo ""
+    read -r -p "  › " choice
 
-    local title=""
-    [[ ${#names[@]} -gt 0 ]] && title="Projects" || title="No projects yet"
-
-    local chosen
-    chosen=$(_pick "$title" "${all_items[@]}")
-
-    [[ -z "$chosen" ]] && { echo ""; exit 0; }
-
-    # Match chosen to project
-    local matched=false
-    for i in "${!labels[@]}"; do
-      if [[ "$chosen" == "${labels[$i]}" ]]; then
-        _screen_project "${names[$i]}" "${paths[$i]}"
-        matched=true
-        break
-      fi
-    done
-    $matched && continue
-
-    case "$chosen" in
-      "+ Add existing project") _action_add_project ;;
-      "* Create new project")   _action_create_project ;;
-      "- Remove project")       _action_remove_project "${names[@]}" ;;
-      "  Quit"|"──────────────────────────────────────") echo ""; exit 0 ;;
+    case "$choice" in
+      q) echo ""; exit 0 ;;
+      a) _action_add_project ;;
+      n) _action_create_project ;;
+      r) [[ ${#names[@]} -gt 0 ]] && _action_remove_project "${names[@]}" ;;
+      [0-9]*)
+        if (( ${#names[@]} > 0 && choice >= 1 && choice <= ${#names[@]} )); then
+          _screen_project "${names[$((choice-1))]}" "${paths[$((choice-1))]}"
+        else
+          echo "  ❌ Invalid choice."; sleep 1
+        fi ;;
+      *) ;;
     esac
   done
 }
@@ -204,28 +131,35 @@ _screen_project() {
     echo "  ──────────────────────────────────────────"
     echo "  $(_short_path "$project_path")"
 
-    local items=()
-    [[ ${#features[@]} -gt 0 ]] && items+=("${features[@]}")
-    [[ ${#features[@]} -gt 0 ]] && items+=("──────────────────────────────────────")
-    items+=("+ Start new feature" "  Back")
+    if [[ ${#features[@]} -gt 0 ]]; then
+      echo ""
+      echo "  Features"
+      echo ""
+      for i in "${!features[@]}"; do
+        printf "  [%d] %s\n" "$(( i + 1 ))" "${features[$i]}"
+      done
+    fi
 
-    local title=""
-    [[ ${#features[@]} -gt 0 ]] && title="Features" || title="No features yet"
+    echo ""
+    echo "  ──────────────────────────────────────────"
+    echo "  [f] Start new feature"
+    echo "  [b] Back"
+    echo ""
+    read -r -p "  › " choice
 
-    local chosen
-    chosen=$(_pick "$title" "${items[@]}")
-
-    [[ -z "$chosen" ]] && return
-
-    case "$chosen" in
-      "+ Start new feature") _action_start_feature "$project_name" "$project_path" ;;
-      "  Back"|"──────────────────────────────────────") return ;;
-      *)
-        # It's a feature name
-        echo ""
-        "$SCRIPT_DIR/feature.sh" "$chosen" --project "$project_path"
-        echo ""; read -r -p "  Press Enter to continue..." _
-        ;;
+    case "$choice" in
+      b) return ;;
+      f) _action_start_feature "$project_name" "$project_path" ;;
+      [0-9]*)
+        if (( ${#features[@]} > 0 && choice >= 1 && choice <= ${#features[@]} )); then
+          local feature="${features[$((choice-1))]}"
+          echo ""
+          "$SCRIPT_DIR/feature.sh" "$feature" --project "$project_path"
+          echo ""; read -r -p "  Press Enter to continue..." _
+        else
+          echo "  ❌ Invalid choice."; sleep 1
+        fi ;;
+      *) ;;
     esac
   done
 }
@@ -297,15 +231,21 @@ _action_remove_project() {
   echo ""
   echo "  🏠  Claude Hollow  ›  Remove project"
   echo "  ──────────────────────────────────────────"
+  echo ""
+  for i in "${!names[@]}"; do
+    printf "  [%d] %s\n" "$(( i + 1 ))" "${names[$i]}"
+  done
+  echo "  [q] Cancel"
+  echo ""
+  read -r -p "  › " choice
 
-  local chosen
-  chosen=$(_pick "Which project to remove?" "${names[@]}" "  Cancel")
-
-  [[ -z "$chosen" || "$chosen" == "  Cancel" ]] && return
-
-  _registry_remove "$chosen"
-  echo "  ✅ '$chosen' removed (directory untouched)."
-  sleep 1
+  [[ "$choice" == "q" ]] && return
+  if [[ "$choice" =~ ^[0-9]+$ ]] && (( choice >= 1 && choice <= ${#names[@]} )); then
+    local name="${names[$((choice-1))]}"
+    _registry_remove "$name"
+    echo "  ✅ '$name' removed (directory untouched)."
+    sleep 1
+  fi
 }
 
 _action_start_feature() {
