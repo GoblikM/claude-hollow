@@ -1,15 +1,15 @@
-# Pracovní data (lokální, netrackovaná)
+# Local working data — not tracked
 inbox/
 features/*
 !features/_templates/
 
-# Worktrees a klony agentů
+# Worktrees and agent clones
 ../.clones/
 
 # Project registry (local)
 .projects
 
-# Lokální nastavení
+# Local settings
 .env
 .env.local
 .claude/settings.local.json
