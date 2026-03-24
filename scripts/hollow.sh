@@ -65,7 +65,7 @@ _pick() {
   _pick_draw() {
     # Move cursor up to redraw (skip on first draw)
     if [[ "${_pick_drawn:-0}" -eq 1 ]]; then
-      tput cuu $(( count + 1 )) 2>/dev/null
+      tput cuu $(( count + 2 )) 2>/dev/null
     fi
     _pick_drawn=1
 
@@ -77,6 +77,7 @@ _pick() {
         printf "    %s\n" "${items[$i]}"
       fi
     done
+    printf "\n  \033[2m↑↓ navigate   Enter select   q quit\033[0m\n"
   }
 
   echo ""
