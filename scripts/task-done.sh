@@ -13,16 +13,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OFFICE_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
-FEATURE_NAME="${1:-}"
-TASK_SLUG="${2:-}"
+PROJECT_SLUG="${1:-}"
+FEATURE_NAME="${2:-}"
+TASK_SLUG="${3:-}"
 
-if [[ -z "$FEATURE_NAME" || -z "$TASK_SLUG" ]]; then
-  echo "Usage: $0 <feature-name> <task-slug>" >&2
+if [[ -z "$PROJECT_SLUG" || -z "$FEATURE_NAME" || -z "$TASK_SLUG" ]]; then
+  echo "Usage: $0 <project-slug> <feature-name> <task-slug>" >&2
   exit 1
 fi
 
 FEATURE_SLUG=$(slugify "$FEATURE_NAME")
-FEATURE_DIR="$OFFICE_DIR/features/$FEATURE_SLUG"
+FEATURE_DIR="$OFFICE_DIR/features/$PROJECT_SLUG/$FEATURE_SLUG"
 TASK_SRC="$FEATURE_DIR/tasks/$TASK_SLUG"
 TASK_DST="$FEATURE_DIR/tasks/done/$TASK_SLUG"
 ALLOWED_PREFIX=$(realpath "$FEATURE_DIR")

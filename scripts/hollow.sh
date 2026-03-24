@@ -143,6 +143,7 @@ _screen_project() {
     echo ""
     echo "  ──────────────────────────────────────────"
     echo "  [f] Start new feature"
+    [[ ${#features[@]} -gt 0 ]] && echo "  [d] Feature done (cleanup after merge)"
     echo "  [b] Back"
     echo ""
     read -r -p "  › " choice
@@ -150,6 +151,7 @@ _screen_project() {
     case "$choice" in
       b) return ;;
       f) _action_start_feature "$project_name" "$project_path" ;;
+      d) [[ ${#features[@]} -gt 0 ]] && _action_feature_done "$project_name" "$project_path" "${features[@]}" ;;
       [0-9]*)
         if (( ${#features[@]} > 0 && choice >= 1 && choice <= ${#features[@]} )); then
           local feature="${features[$((choice-1))]}"
@@ -245,6 +247,35 @@ _action_remove_project() {
     _registry_remove "$name"
     echo "  ✅ '$name' removed (directory untouched)."
     sleep 1
+  fi
+}
+
+_action_feature_done() {
+  local project_name="$1"
+  local project_path="$2"
+  shift 2
+  local features=("$@")
+
+  clear
+  echo ""
+  echo "  🏠  Claude Hollow  ›  $project_name  ›  Feature done"
+  echo "  ──────────────────────────────────────────"
+  echo ""
+  echo "  Select the feature to clean up (after merging to main):"
+  echo ""
+  for i in "${!features[@]}"; do
+    printf "  [%d] %s\n" "$(( i + 1 ))" "${features[$i]}"
+  done
+  echo "  [q] Cancel"
+  echo ""
+  read -r -p "  › " choice
+
+  [[ "$choice" == "q" ]] && return
+  if [[ "$choice" =~ ^[0-9]+$ ]] && (( choice >= 1 && choice <= ${#features[@]} )); then
+    local feature="${features[$((choice-1))]}"
+    echo ""
+    "$SCRIPT_DIR/feature-done.sh" "$feature" --project "$project_path"
+    echo ""; read -r -p "  Press Enter to continue..." _
   fi
 }
 

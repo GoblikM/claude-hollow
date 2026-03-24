@@ -173,6 +173,7 @@ else
       -e "s|{{FEATURE_NAME}}|$FEATURE_SLUG|g" \
       -e "s|{{FEATURE_BRANCH}}|$FEATURE_BRANCH|g" \
       -e "s|{{PROJECT_DIR}}|$PROJECT_DIR|g" \
+      -e "s|{{PROJECT_SLUG}}|$PROJECT_SLUG|g" \
       -e "s|{{WORKSPACE_DIR}}|$WORKTREE_DIR|g" \
       -e "s|{{DATE}}|$(date +%Y-%m-%d)|g" \
       "$OFFICE_DIR/features/_templates/feature-claude.md" \

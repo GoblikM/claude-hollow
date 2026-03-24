@@ -134,16 +134,22 @@ git -C {{WORKSPACE_DIR}} branch -d task/<slug>
 
 Archive the task:
 ```bash
-../../../scripts/task-done.sh {{FEATURE_NAME}} <slug>
+../../../scripts/task-done.sh {{PROJECT_SLUG}} {{FEATURE_NAME}} <slug>
 ```
 
 ### 5. Feature is complete when
 - All tasks are in `tasks/done/`
 - Write documentation to `docs/` — what was implemented, key decisions
 
-### 6. MR to upstream
+### 6. Hand off to user
 Merge requests are created **exclusively by the user manually** — never create one yourself.
-Only inform the user that branch `{{FEATURE_BRANCH}}` is ready for a MR.
+
+Inform the user:
+1. Branch `{{FEATURE_BRANCH}}` is ready — merge it into main manually
+2. After merging, run cleanup:
+```bash
+../../../scripts/feature-done.sh {{FEATURE_NAME}}
+```
 
 ---
 
