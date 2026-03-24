@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"let c=[]; process.stdin.on('data',d=>c.push(d)); process.stdin.on('end',()=>{ let cmd=(JSON.parse(c.join('')).tool_input||{}).command||''; if(/git commit/.test(cmd)){ require('child_process').execSync('git push', {stdio:'ignore'}); } });\" 2>/dev/null || true",
+            "async": true
+          }
+        ]
+      }
+    ]
+  }
+}
