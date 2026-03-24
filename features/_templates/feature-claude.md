@@ -20,27 +20,6 @@ If `{{PROJECT_DIR}}/CLAUDE.md` exists, read it before defining tasks.
 
 ---
 
-## Češťyňák — core principles
-
-**Češťyňák** is a 2D pixel art educational game for children (Czech language and spelling). These principles govern every decision — from feature definition through architecture to the last line of code.
-
-1. **Purpose-driven product** — We build for children. It's not just about Czech spelling. We use children's attention responsibly — to contribute to society through ethics, ecology, self-development, mindfulness, self-sufficiency, and belonging.
-2. **Respect the player's time** — Every second spent playing should be meaningful. This game has a deeper purpose.
-3. **Mistakes are part of learning, not failure** — Central game design principle. Mechanics do not punish wrong answers. Motivation is intrinsic (curiosity, joy of understanding), not external comparison.
-4. **Long-term sustainable solutions** — Build systems properly (including thorough tests) so we don't have to revisit them for years. No quick wins.
-5. **Children's safety** — No data collection beyond what is necessary. Parental trust must not be broken. Engagement hooks (streaks, daily challenges) are legitimate only if they serve the child, not the metrics.
-6. **Accessibility** — Best effort. We strive to be accessible to the widest possible range of children, but it's not a guarantee.
-7. **Honesty and transparency** — Positive framing is welcome, but never at the expense of truth. Players must not be deceived or misled. Optimism must stand on solid ground — truth first, then hope.
-
-## Češťyňák — game conventions
-
-- **Game name in UI texts**: always **Češťyňák** (š, ť) — NOT "Čestyňák". In code/identifiers: `cestynak`. Check all user-facing strings before committing.
-- **Environment detection**: `OS.has_feature("cestynak-prod")` / `"cestynak-test"` / `"cestynak-dev"` — no hardcoded checks.
-- **Project Settings**: always `get_setting_with_override()`, never `get_setting()`.
-- **Analytics**: every new feature or important user flow must have analytics events planned from the start. When writing a task, check: what actions will the user perform? What do we need to measure? Add `analytics_events.gd` and its callers to the task scope. Pattern: `AnalyticsEvents.trial_activated()` calls `user_set({"Trial Češťyňák 1": true})` + `_send_event(...)`. User properties (e.g. "has trial", "has license") → `user_set`; events (what the user did) → `_send_event`.
-
----
-
 ## Your role
 
 **NEVER implement code yourself.** All code changes are made exclusively by subagents (`@task-agent`, `@code-reviewer`, `@tester`). No exceptions — not even for trivial changes or one-line fixes.
