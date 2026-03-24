@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# task-done.sh – Přesune dokončený task do done/
+# task-done.sh – Moves a completed task to done/
 #
-# Použití:
+# Usage:
 #   ./scripts/task-done.sh <feature-name> <task-slug>
 #
-# Příklad:
-#   ./scripts/task-done.sh oprava-pismena fix-vowel-highlight
+# Example:
+#   ./scripts/task-done.sh my-feature fix-login-bug
 
 set -euo pipefail
 
@@ -17,7 +17,7 @@ FEATURE_NAME="${1:-}"
 TASK_SLUG="${2:-}"
 
 if [[ -z "$FEATURE_NAME" || -z "$TASK_SLUG" ]]; then
-  echo "Použití: $0 <feature-name> <task-slug>" >&2
+  echo "Usage: $0 <feature-name> <task-slug>" >&2
   exit 1
 fi
 
@@ -28,16 +28,16 @@ TASK_DST="$FEATURE_DIR/tasks/done/$TASK_SLUG"
 ALLOWED_PREFIX=$(realpath "$FEATURE_DIR")
 
 if [[ ! -d "$TASK_SRC" ]]; then
-  echo "Chyba: task '$TASK_SLUG' neexistuje v '$FEATURE_DIR/tasks/'" >&2
+  echo "Error: task '$TASK_SLUG' does not exist in '$FEATURE_DIR/tasks/'" >&2
   exit 1
 fi
 
 if [[ -d "$TASK_DST" ]]; then
-  echo "Chyba: task '$TASK_SLUG' je již v done/" >&2
+  echo "Error: task '$TASK_SLUG' is already in done/" >&2
   exit 1
 fi
 
 mkdir -p "$FEATURE_DIR/tasks/done"
 safe_move "$TASK_SRC" "$TASK_DST" "$ALLOWED_PREFIX"
 
-echo "✅ Task '$TASK_SLUG' přesunut do done/"
+echo "✅ Task '$TASK_SLUG' moved to done/"

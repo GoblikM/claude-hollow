@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# cc.sh – Spustí task agenta v izolovaném git klonu
+# cc.sh – Launches a task agent in an isolated git clone
 #
-# Použití:
+# Usage:
 #   ./scripts/cc.sh <project-dir> --task <path-to-task.md> [--branch <branch>] [--timeout <minutes>]
-#   ./scripts/cc.sh <project-dir> [--branch <branch>]   # interaktivní agent
+#   ./scripts/cc.sh <project-dir> [--branch <branch>]   # interactive agent
 #
-# Příklady:
-#   ./scripts/cc.sh ~/dev/cestynak --task features/my-feature/tasks/fix-bug/task.md
-#   ./scripts/cc.sh ~/dev/cestynak --branch feature/my-feature
+# Examples:
+#   ./scripts/cc.sh ~/dev/my-project --task features/my-feature/tasks/fix-bug/task.md
+#   ./scripts/cc.sh ~/dev/my-project --branch feature/my-feature
 
 set -euo pipefail
 
@@ -15,7 +15,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OFFICE_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
-# ─── Argumenty ───────────────────────────────────────────────────────────────
+# ─── Arguments ───────────────────────────────────────────────────────────────
 
 PROJECT_DIR=""
 TASK_FILE=""
@@ -42,14 +42,14 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     -*)
-      echo "Neznámý přepínač: $1" >&2
+      echo "Unknown flag: $1" >&2
       exit 1
       ;;
     *)
       if [[ -z "$PROJECT_DIR" ]]; then
         PROJECT_DIR="$1"
       else
-        echo "Neočekávaný argument: $1" >&2
+        echo "Unexpected argument: $1" >&2
         exit 1
       fi
       shift
@@ -57,23 +57,23 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# ─── Validace ────────────────────────────────────────────────────────────────
+# ─── Validation ──────────────────────────────────────────────────────────────
 
 if [[ -z "$PROJECT_DIR" ]]; then
-  echo "Chyba: chybí <project-dir>" >&2
-  echo "Použití: $0 <project-dir> --task <task.md>" >&2
+  echo "Error: missing <project-dir>" >&2
+  echo "Usage: $0 <project-dir> --task <task.md>" >&2
   exit 1
 fi
 
 PROJECT_DIR=$(realpath "$PROJECT_DIR")
 
 if [[ ! -d "$PROJECT_DIR/.git" ]]; then
-  echo "Chyba: '$PROJECT_DIR' není git repozitář" >&2
+  echo "Error: '$PROJECT_DIR' is not a git repository" >&2
   exit 1
 fi
 
 if [[ -z "$TASK_FILE" && "$INTERACTIVE" == false ]]; then
-  echo "Chyba: zadej --task <soubor> nebo --interactive" >&2
+  echo "Error: provide --task <file> or --interactive" >&2
   exit 1
 fi
 
@@ -86,36 +86,36 @@ if [[ -n "$TASK_FILE" ]]; then
   fi
 
   if [[ ! -f "$TASK_FILE_ABS" ]]; then
-    echo "Chyba: task soubor '$TASK_FILE_ABS' neexistuje" >&2
+    echo "Error: task file '$TASK_FILE_ABS' does not exist" >&2
     exit 1
   fi
 
-  # Slug z názvu souboru (rodičovský adresář)
+  # Slug from file name (parent directory)
   TASK_SLUG=$(basename "$(dirname "$TASK_FILE_ABS")")
 else
   TASK_SLUG="interactive-$(date +%Y%m%d-%H%M%S)"
 fi
 
-# ─── Určení větve ────────────────────────────────────────────────────────────
+# ─── Branch detection ────────────────────────────────────────────────────────
 
 if [[ -z "$BRANCH" ]]; then
   CURRENT_BRANCH=$(git -C "$PROJECT_DIR" rev-parse --abbrev-ref HEAD)
 
-  # Agenti nesmí pracovat přímo na master/main
+  # Agents must not work directly on master/main
   if [[ "$CURRENT_BRANCH" == "master" || "$CURRENT_BRANCH" == "main" ]]; then
-    echo "❌ Chyba: Nelze spustit agenta na větvi '$CURRENT_BRANCH'." >&2
-    echo "   Vytvoř feature větev: git checkout -b feature/<nazev>" >&2
+    echo "❌ Error: Cannot run agent on branch '$CURRENT_BRANCH'." >&2
+    echo "   Create a feature branch: git checkout -b feature/<name>" >&2
     exit 1
   fi
 
   BRANCH="$CURRENT_BRANCH"
 fi
 
-echo "📋 Task: ${TASK_FILE:-interaktivní}"
-echo "🌿 Větev: $BRANCH"
-echo "📁 Projekt: $PROJECT_DIR"
+echo "📋 Task: ${TASK_FILE:-interactive}"
+echo "🌿 Branch: $BRANCH"
+echo "📁 Project: $PROJECT_DIR"
 
-# ─── Izolovaný klon ──────────────────────────────────────────────────────────
+# ─── Isolated clone ──────────────────────────────────────────────────────────
 
 CLONES_DIR="$PROJECT_DIR/../.clones"
 CLONE_DIR="$CLONES_DIR/task-$TASK_SLUG"
@@ -123,38 +123,38 @@ CLONE_DIR="$CLONES_DIR/task-$TASK_SLUG"
 mkdir -p "$CLONES_DIR"
 
 if [[ -d "$CLONE_DIR" ]]; then
-  echo "♻️  Existující klon nalezen: $CLONE_DIR"
-  echo "   Aktualizuji..."
+  echo "♻️  Existing clone found: $CLONE_DIR"
+  echo "   Updating..."
   git -C "$CLONE_DIR" fetch origin --quiet
   git -C "$CLONE_DIR" checkout "$BRANCH" --quiet 2>/dev/null || \
     git -C "$CLONE_DIR" checkout -b "$BRANCH" "origin/$BRANCH" --quiet
   git -C "$CLONE_DIR" reset --hard "origin/$BRANCH" --quiet
 else
-  echo "🔄 Vytvářím izolovaný klon..."
+  echo "🔄 Creating isolated clone..."
   git clone "$PROJECT_DIR" "$CLONE_DIR" --quiet
   git -C "$CLONE_DIR" fetch origin "$BRANCH" --quiet 2>/dev/null || true
   git -C "$CLONE_DIR" checkout "$BRANCH" 2>/dev/null || \
     git -C "$CLONE_DIR" checkout -b "$BRANCH" "origin/$BRANCH"
 fi
 
-echo "✅ Klon připraven: $CLONE_DIR"
+echo "✅ Clone ready: $CLONE_DIR"
 
-# ─── Vytvoření task větve ─────────────────────────────────────────────────────
+# ─── Create task branch ───────────────────────────────────────────────────────
 
 TASK_BRANCH="task/$TASK_SLUG"
 
 if git -C "$CLONE_DIR" show-ref --verify --quiet "refs/heads/$TASK_BRANCH" 2>/dev/null; then
-  echo "🌿 Task větev existuje: $TASK_BRANCH"
+  echo "🌿 Task branch exists: $TASK_BRANCH"
   git -C "$CLONE_DIR" checkout "$TASK_BRANCH" --quiet
 else
-  echo "🌿 Vytvářím task větev: $TASK_BRANCH"
+  echo "🌿 Creating task branch: $TASK_BRANCH"
   git -C "$CLONE_DIR" checkout -b "$TASK_BRANCH" --quiet
 fi
 
-# ─── Spuštění agenta ─────────────────────────────────────────────────────────
+# ─── Launch agent ────────────────────────────────────────────────────────────
 
 LOG_FILE="$OFFICE_DIR/features"
-# Zkus najít feature adresář pro log
+# Try to find the feature directory for the log
 if [[ -n "$TASK_FILE" ]]; then
   FEATURE_FROM_TASK=$(echo "$TASK_FILE" | sed 's|features/\([^/]*\)/.*|\1|')
   LOG_DIR="$OFFICE_DIR/features/$FEATURE_FROM_TASK/tasks/$TASK_SLUG"
@@ -163,14 +163,14 @@ if [[ -n "$TASK_FILE" ]]; then
 fi
 
 echo ""
-echo "🤖 Spouštím agenta (timeout: ${TIMEOUT_MINUTES}min)..."
+echo "🤖 Launching agent (timeout: ${TIMEOUT_MINUTES}min)..."
 echo "   Log: ${LOG_FILE:-stdout}"
 echo ""
 
-# Nastav timeout
+# Set timeout
 TIMEOUT_SECS=$((TIMEOUT_MINUTES * 60))
 
-# Spuštění Claude Code agenta
+# Launch Claude Code agent
 if [[ -n "$TASK_FILE" ]]; then
   cd "$CLONE_DIR"
   TASK_PROMPT=$(cat "$TASK_FILE_ABS")
@@ -182,7 +182,7 @@ if [[ -n "$TASK_FILE" ]]; then
     AGENT_EXIT=${PIPESTATUS[0]}
   fi
 else
-  # Interaktivní
+  # Interactive
   cd "$CLONE_DIR"
   claude
   AGENT_EXIT=$?
@@ -190,32 +190,32 @@ fi
 
 echo ""
 
-# ─── Post-task: fetch commitů zpět ───────────────────────────────────────────
+# ─── Post-task: fetch commits back ───────────────────────────────────────────
 
 if [[ "$AGENT_EXIT" -eq 0 ]] || [[ "$AGENT_EXIT" -eq 124 ]]; then
-  echo "📥 Načítám commity z klonu zpět do projektu..."
+  echo "📥 Fetching commits from clone back to project..."
   git -C "$PROJECT_DIR" fetch "$CLONE_DIR" "$TASK_BRANCH:refs/agent-commits/$TASK_SLUG" 2>/dev/null || {
-    echo "   (žádné nové commity)"
+    echo "   (no new commits)"
   }
 
-  # Zobraz co agent udělal
+  # Show what the agent did
   COMMIT_COUNT=$(git -C "$CLONE_DIR" rev-list "origin/$BRANCH..$TASK_BRANCH" --count 2>/dev/null || echo 0)
   if [[ "$COMMIT_COUNT" -gt 0 ]]; then
-    echo "✅ Agent vytvořil $COMMIT_COUNT commit(ů):"
+    echo "✅ Agent created $COMMIT_COUNT commit(s):"
     git -C "$CLONE_DIR" log "origin/$BRANCH..$TASK_BRANCH" --oneline
     echo ""
-    echo "📌 Pro merge task větve spusť:"
+    echo "📌 To merge the task branch run:"
     echo "   git -C $PROJECT_DIR fetch $CLONE_DIR $TASK_BRANCH:$TASK_BRANCH"
     echo "   git -C $PROJECT_DIR merge $TASK_BRANCH"
   else
-    echo "ℹ️  Agent nevytvořil žádné commity"
+    echo "ℹ️  Agent created no commits"
   fi
 else
-  echo "❌ Agent skončil s chybou (exit code: $AGENT_EXIT)"
+  echo "❌ Agent exited with error (exit code: $AGENT_EXIT)"
 fi
 
 if [[ "$AGENT_EXIT" -eq 124 ]]; then
-  echo "⏱️  Timeout: agent překročil ${TIMEOUT_MINUTES} minut"
+  echo "⏱️  Timeout: agent exceeded ${TIMEOUT_MINUTES} minutes"
 fi
 
 exit "${AGENT_EXIT:-0}"

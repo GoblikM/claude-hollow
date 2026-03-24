@@ -1,135 +1,135 @@
-# CLAUDE.md – Office, orchestrační centrum pro vývoj projektů
+# CLAUDE.md – Office, AI agent orchestration center
 
-## Projekt
+## Project
 
-**Office** je orchestrační systém pro vývoj libovolného projektu pomocí AI agentů.
+**Office** is an orchestration system for developing any project using AI agents.
 
-Repozitář projektu: předáváš přes `--project` při spuštění `feature.sh`, nebo je uložen v `features/<name>/CLAUDE.md`.
-Architektura projektu: `<project-dir>/CLAUDE.md` (pokud existuje)
-
----
-
-## Základní principy
-
-Tato pravidla řídí každé rozhodnutí — od definice feature přes architekturu po poslední řádek kódu.
-
-1. **Produkt s vyšším smyslem** — Stavíme věci, které dávají smysl. Každé rozhodnutí má sloužit uživatelům.
-2. **Respekt k času uživatele** — Každá vteřina strávená používáním produktu má smysl.
-3. **Chyba je součást procesu, ne selhání** — Iterujeme, testujeme, zlepšujeme.
-4. **Dlouhodobě udržitelná řešení** — Stavíme systémy pořádně (včetně testů). Žádné quick-wins.
-5. **Bezpečnost a soukromí** — Žádný sběr dat nad rámec nezbytného.
-6. **Přístupnost** — Best effort pro co nejširší spektrum uživatelů.
-7. **Pravdivost a upřímnost** — Nejdřív pravda, pak naděje.
+Project repository: passed via `--project` when running `feature.sh`, or stored in `features/<name>/CLAUDE.md`.
+Project architecture: `<project-dir>/CLAUDE.md` (if it exists)
 
 ---
 
-## Orchestrátor a agenti
+## Core principles
 
-### Přísné pravidlo
+These rules govern every decision — from feature definition through architecture to the last line of code.
 
-**Orchestrátor NIKDY neimplementuje změny v repozitáři projektu sám.** Veškeré změny kódu provádí výhradně subagenti. Bez výjimky — ani pro triviální změny, jednořádkové opravy.
+1. **Purpose-driven product** — Build things that matter. Every decision should serve the users.
+2. **Respect user's time** — Every second spent using the product should be meaningful.
+3. **Mistakes are part of the process, not failure** — Iterate, test, improve.
+4. **Long-term sustainable solutions** — Build systems properly (including tests). No quick wins.
+5. **Security and privacy** — No data collection beyond what is necessary.
+6. **Accessibility** — Best effort for the widest possible range of users.
+7. **Honesty and transparency** — Truth first, then hope.
 
-Orchestrátor smí pouze:
-- Vytvářet a upravovat tasky, docs (v `features/`)
-- Spouštět subagenty (`@task-agent`, `@code-reviewer`, `@tester`)
-- Mergovat task větve do feature větve
-- Přesouvat tasky do `done/`
-- Spravovat GTD strukturu (inbox, blocked, icebox)
+---
 
-### Pipeline pro každý task
+## Orchestrator and agents
 
-Každý task prochází třemi subagenty v pořadí:
+### Strict rule
 
-1. **`@task-agent`** — implementuje změny, commituje na `task/<slug>` větev
-2. **`@code-reviewer`** — reviewuje diff, ověří AC a konvence; vrátí `APPROVED` nebo `CHANGES REQUESTED`
-3. **`@tester`** — spustí testy; vrátí `TESTS PASS` nebo `TESTS FAIL`
+**The orchestrator NEVER implements changes in the project repository itself.** All code changes are made exclusively by subagents. No exceptions — not even for trivial changes or one-line fixes.
 
-Pokud reviewer nebo tester vrátí neúspěch → orchestrátor spustí `@task-agent` znovu s konkrétním feedbackem.
+The orchestrator may only:
+- Create and edit tasks, docs (in `features/`)
+- Launch subagents (`@task-agent`, `@code-reviewer`, `@tester`)
+- Merge task branches into the feature branch
+- Move tasks to `done/`
+- Manage GTD structure (inbox, blocked, icebox)
 
-### Neustálé zlepšování
+### Pipeline for each task
 
-Kdykoli orchestrátor narazí na chybu v procesu nebo prostor pro zlepšení (workflow, skripty, šablony…), **okamžitě to zachytí do `inbox/`**. Nečekat na "vhodnou chvíli".
+Each task goes through three subagents in order:
 
-### Spuštění feature orchestrátora
+1. **`@task-agent`** — implements changes, commits to `task/<slug>` branch
+2. **`@code-reviewer`** — reviews the diff, verifies AC and conventions; returns `APPROVED` or `CHANGES REQUESTED`
+3. **`@tester`** — runs tests; returns `TESTS PASS` or `TESTS FAIL`
 
-Spouští **uživatel z terminálu** (ne orchestrátor zevnitř Claude session):
+If reviewer or tester returns failure → orchestrator runs `@task-agent` again with specific feedback.
+
+### Continuous improvement
+
+Whenever the orchestrator encounters a process error or room for improvement (workflow, scripts, templates…), **capture it immediately in `inbox/`**. Don't wait for a "right moment".
+
+### Starting the feature orchestrator
+
+Started by the **user from the terminal** (not by the orchestrator inside a Claude session):
 
 ```bash
 ./scripts/feature.sh <feature-name> --project <path-to-project>
 ```
 
-Při prvním spuštění vytvoří `features/<name>/` (GTD struktura, feature větev, worktree), vygeneruje `CLAUDE.md` a spustí Claude jako orchestrátora té feature.
-Při dalších spuštěních otevře existující feature.
+On first run, creates `features/<name>/` (GTD structure, feature branch, worktree), generates `CLAUDE.md`, and starts Claude as the feature orchestrator.
+On subsequent runs, opens the existing feature.
 
-Feature `CLAUDE.md` vždy obsahuje tabulku **Klíčový kontext** — repozitář projektu, worktree, větev. Orchestrátor ji musí přečíst jako první krok.
+The feature `CLAUDE.md` always contains a **Key context** table — project repository, worktree, branch. The orchestrator must read it as the first step.
 
-### Monitorování subagentů
+### Monitoring subagents
 
-Subagenti běží přímo v Claude session — jejich výstup je viditelný v reálném čase. Pro background subagenty Claude oznámí dokončení automaticky.
+Subagents run directly in the Claude session — their output is visible in real time. For background subagents, Claude announces completion automatically.
 
 ---
 
-## GTD architektura
+## GTD architecture
 
 ```
 office/
 ├── features/
 │   └── <name>/
-│       ├── CLAUDE.md       # Kontext orchestrátora — obsahuje cestu k repozitáři projektu, worktree, větev
-│       ├── tasks/          # Aktivní, akční tasky
-│       │   └── done/       # Dokončené tasky — archiv
-│       ├── blocked/        # Nelze spustit — čeká na ext. rozhodnutí/info
-│       ├── icebox/         # Vědomě odloženo na pozdější fázi
-│       └── docs/           # Dokumentace specifická pro feature
-└── inbox/                  # Root-level capture bucket — nezpracované nápady
+│       ├── CLAUDE.md       # Orchestrator context — contains path to project repo, worktree, branch
+│       ├── tasks/          # Active, actionable tasks
+│       │   └── done/       # Completed tasks — archive
+│       ├── blocked/        # Cannot start — waiting on external decision/info
+│       ├── icebox/         # Deliberately deferred to a later phase
+│       └── docs/           # Feature-specific documentation
+└── inbox/                  # Root-level capture bucket — unprocessed ideas
 ```
 
-### Konvence GTD složek
+### GTD folder conventions
 
-| Složka | Pravidlo |
-|--------|----------|
-| `inbox/` | Cokoli nezpracovaného — nápad, poznatek, TODO bez feature kontextu |
-| `tasks/` | Akční, jasně definovaný, lze spustit ihned |
-| `blocked/` | Definovaný task, ale nelze spustit — čeká na ext. rozhodnutí/implementaci/info |
-| `icebox/` | Vědomě odloženo — víme co chceme, ale ne teď (pozdější fáze) |
-| `tasks/done/` | Dokončené tasky — archiv v kontextu feature |
+| Folder | Rule |
+|--------|------|
+| `inbox/` | Anything unprocessed — idea, insight, TODO without feature context |
+| `tasks/` | Actionable, clearly defined, can start immediately |
+| `blocked/` | Defined task, but cannot start — waiting on external decision/implementation/info |
+| `icebox/` | Deliberately deferred — we know what we want, but not now (later phase) |
+| `tasks/done/` | Completed tasks — archive within feature context |
 
 ### Task lifecycle
 
-| Situace | Akce |
-|---------|------|
-| Nový nápad bez kontextu | → `inbox/<slug>.md` |
-| Inbox položka je akční | → `features/<name>/tasks/<slug>/task.md` |
-| Task nelze spustit | → `features/<name>/blocked/<slug>/issue.md` |
-| Task odložen vědomě | → `features/<name>/icebox/<slug>/issue.md` |
-| Task dokončen | → přesun do `features/<name>/tasks/done/` |
+| Situation | Action |
+|-----------|--------|
+| New idea without context | → `inbox/<slug>.md` |
+| Inbox item is actionable | → `features/<name>/tasks/<slug>/task.md` |
+| Task cannot start | → `features/<name>/blocked/<slug>/issue.md` |
+| Task deliberately deferred | → `features/<name>/icebox/<slug>/issue.md` |
+| Task completed | → move to `features/<name>/tasks/done/` |
 
 ---
 
-## Git pravidla
+## Git rules
 
-### Repozitář projektu
+### Project repository
 
-- `feature/<název>` — nová funkcionalita; **vždy z master/main, nikdy z jiné feature větve**
-- `task/<název>` — agent větve; zakládá `@task-agent` automaticky; vždy z feature větve, nikdy z master
-- Po mergi task větve do feature větve ji ihned smaž
-- `master`/`main` — pouze přes review merge; agenti nesmí běžet přímo z master
-- Merge request vytváří **výhradně uživatel ručně**
-- Orchestrátor pouze informuje že je feature připravena, ale MR nevytváří
+- `feature/<name>` — new functionality; **always from master/main, never from another feature branch**
+- `task/<name>` — agent branches; created by `@task-agent` automatically; always from feature branch, never from master
+- After merging a task branch into the feature branch, delete it immediately
+- `master`/`main` — only via reviewed merge; agents must not run directly from master
+- Merge requests are created **exclusively by the user manually** — the orchestrator never creates them
+- The orchestrator only informs the user that the feature is ready, but does not create the MR
 
 ### Office
 
-- Všechny změny commitovat přímo na `main`, ihned pushovat (push probíhá automaticky přes hook)
-- Vždy nový commit, nikdy `--amend` na publishnutém commitu
-- Commit messages jsou **anglicky**
-- Commity **neobsahují** `Co-Authored-By` trailer
+- All changes committed directly to `main`, pushed immediately (push happens automatically via hook)
+- Always a new commit, never `--amend` on a published commit
+- Commit messages are in **English**
+- Commits **do not contain** `Co-Authored-By` trailer
 
 ---
 
-## Pravidla pro agenty
+## Agent rules
 
-- Agenti pracují **výhradně v rámci `## Scope`** svého `task.md`
-- **Nesmí** vytvářet tasky ani soubory mimo Scope
-- **Smí** zapsat log do své task složky
-- **Smí** vytvořit `inbox/<slug>.md` při zachycení důležitého poznatku mimo scope
-- Pokud narazí na blokátor → zdokumentují ho v `## Notes` svého `task.md`
+- Agents work **exclusively within the `## Scope`** of their `task.md`
+- **Must not** create tasks or files outside the Scope
+- **May** write a log to their task folder
+- **May** create `inbox/<slug>.md` when capturing an important insight outside scope
+- If they encounter a blocker → document it in `## Notes` of their `task.md`

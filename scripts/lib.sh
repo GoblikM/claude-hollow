@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Sdílené utility pro office skripty
+# Shared utilities for office scripts
 
 set -euo pipefail
 
-# Najde hlavní větev (master nebo main)
+# Finds the main branch (master or main)
 _detect_main_branch() {
   local repo_dir="${1:-.}"
   if git -C "$repo_dir" show-ref --verify --quiet refs/remotes/origin/master 2>/dev/null; then
@@ -17,8 +17,8 @@ _detect_main_branch() {
   fi
 }
 
-# Ověří, že feature větev je aktuální vůči origin/master (nebo main)
-# Vrátí 0 pokud je OK, 1 pokud je za
+# Checks that a feature branch is up to date with origin/master (or main)
+# Returns 0 if OK, 1 if behind
 check_master_ancestry() {
   local repo_dir="$1"
   local branch="$2"
@@ -40,39 +40,39 @@ check_master_ancestry() {
   fi
 }
 
-# Vytiskne varování pokud je branch za main
+# Prints a warning if the branch is behind main
 warn_if_stale() {
   local repo_dir="$1"
   local branch="$2"
   local label="${3:-branch}"
 
   if ! check_master_ancestry "$repo_dir" "$branch"; then
-    echo "⚠️  VAROVÁNÍ: $label ($branch) je za origin/master. Zvažte rebase." >&2
+    echo "⚠️  WARNING: $label ($branch) is behind origin/master. Consider rebasing." >&2
   fi
 }
 
-# Slugifikuje název (malá písmena, pomlčky místo mezer/speciálních znaků)
+# Slugifies a name (lowercase, hyphens instead of spaces/special chars)
 slugify() {
   echo "$1" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//'
 }
 
-# Bezpečně přesune soubory jen v rámci povolené cesty
+# Safely moves files only within an allowed path
 safe_move() {
   local src="$1"
   local dst="$2"
   local allowed_prefix="$3"
 
-  # Resolve absolutní cesty
+  # Resolve absolute paths
   src=$(realpath "$src")
   dst_parent=$(realpath "$(dirname "$dst")")
 
   if [[ "$src" != "$allowed_prefix"* ]]; then
-    echo "❌ Chyba: Zdroj '$src' je mimo povolenou oblast '$allowed_prefix'" >&2
+    echo "❌ Error: Source '$src' is outside the allowed area '$allowed_prefix'" >&2
     exit 1
   fi
 
   if [[ "$dst_parent" != "$allowed_prefix"* ]]; then
-    echo "❌ Chyba: Cíl '$dst' je mimo povolenou oblast '$allowed_prefix'" >&2
+    echo "❌ Error: Destination '$dst' is outside the allowed area '$allowed_prefix'" >&2
     exit 1
   fi
 

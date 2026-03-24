@@ -1,29 +1,29 @@
-# Task: [název tasku]
+# Task: [task name]
 
 ## Metadata
 - **Feature:** [feature-name]
-- **Komponenta:** game | backend | web | all
-- **Větev:** feature/[feature-name]
-- **Odhadovaná složitost:** S | M | L
+- **Component:** [e.g. frontend | backend | api | all]
+- **Branch:** feature/[feature-name]
+- **Estimated complexity:** S | M | L
 
-## Scope (rozsah změn)
-Které soubory/adresáře smí agent měnit:
+## Scope
+Files/directories the agent may change:
 ```
-game/src/...
-backend/app/...
+src/...
+lib/...
 ```
 
-## Popis
-Co má agent udělat a proč.
+## Description
+What the agent should do and why.
 
 ## Acceptance criteria
-Jak poznáme, že je task hotový:
+How we know the task is done:
 - [ ] ...
 - [ ] ...
 
-## Technické poznámky
-Volitelně – kontext, omezení, návrhy implementace.
+## Technical notes
+Optional — context, constraints, implementation suggestions.
 
-## Testy
-- [ ] Unit testy napsány a procházejí
-- [ ] Manuálně ověřeno: [popis]
+## Tests
+- [ ] Unit tests written and passing
+- [ ] Manually verified: [description]
