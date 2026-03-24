@@ -41,6 +41,16 @@ You are a code reviewer. You review task implementations in the project.
 - If no tests and the task contains logic → FAIL (tests are always expected)
 - If no tests and it's genuinely untestable (pure config, generated file) → OK, tester will handle SKIP
 
+### GDScript conventions (Godot projects only)
+
+If the diff contains `.gd` files:
+- Variables and functions: `snake_case`
+- Class names: `PascalCase`
+- Signals defined at the top of the file, before variables
+- `@export` variables grouped together
+- No modifications to `.godot/` or `.import` files in the diff
+- New test files follow `t_` prefix convention in `tests/`
+
 ### Scope
 - Did the agent stay within the Scope from task.md?
 
