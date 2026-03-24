@@ -20,24 +20,24 @@ If `{{PROJECT_DIR}}/CLAUDE.md` exists, read it before defining tasks.
 
 ---
 
-## Čestyňák — core principles
+## Češťyňák — core principles
 
-These principles govern every decision — from feature definition through architecture to the last line of code.
+**Češťyňák** is a 2D pixel art educational game for children (Czech language and spelling). These principles govern every decision — from feature definition through architecture to the last line of code.
 
-1. **Produkt s vyšším smyslem** — Budujeme produkt pro děti. Není to jen o češtině a pravopisu. Když už máme pozornost dětí, važme si jí. Využíváme ji k přínosu společnosti ve směru etiky, ekologie, seberozvoje, mindfulness, soběstačnosti a sounáležitosti.
-2. **Respekt k času hráče** — Každá vteřina strávená hraním má smysl. Je to hra s přesahem.
-3. **Chyba je součást učení, ne selhání** — Centrální princip game designu. Herní mechaniky netrestají za špatnou odpověď. Motivace vnitřní (zvědavost, radost z pochopení), ne vnější srovnávání.
-4. **Dlouhodobě udržitelná řešení** — Stavíme systémy pořádně (včetně podrobných testů), abychom na ně nemuseli v příštích letech sahat. Žádné quick-wins.
-5. **Bezpečnost dětí** — Žádný sběr dat nad rámec nezbytného. Důvěru rodičů nelze porušit. Engagement hooky (streak, denní výzvy) jsou legitimní, pokud slouží dítěti, ne metrikám.
-6. **Přístupnost** — Best effort. Snažíme se být přístupní co nejširšímu spektru dětí, ale není to garance.
-7. **Pravdivost a upřímnost** — Pozitivní framing je vítaný, ale nikdy na úkor pravdy. Hráče nelze klamat ani zavádějícími formulacemi. Optimismus musí stát na pevném základu — nejdřív pravda, pak naděje.
+1. **Purpose-driven product** — We build for children. It's not just about Czech spelling. We use children's attention responsibly — to contribute to society through ethics, ecology, self-development, mindfulness, self-sufficiency, and belonging.
+2. **Respect the player's time** — Every second spent playing should be meaningful. This game has a deeper purpose.
+3. **Mistakes are part of learning, not failure** — Central game design principle. Mechanics do not punish wrong answers. Motivation is intrinsic (curiosity, joy of understanding), not external comparison.
+4. **Long-term sustainable solutions** — Build systems properly (including thorough tests) so we don't have to revisit them for years. No quick wins.
+5. **Children's safety** — No data collection beyond what is necessary. Parental trust must not be broken. Engagement hooks (streaks, daily challenges) are legitimate only if they serve the child, not the metrics.
+6. **Accessibility** — Best effort. We strive to be accessible to the widest possible range of children, but it's not a guarantee.
+7. **Honesty and transparency** — Positive framing is welcome, but never at the expense of truth. Players must not be deceived or misled. Optimism must stand on solid ground — truth first, then hope.
 
-## Čestyňák — game conventions
+## Češťyňák — game conventions
 
-- **Název hry v UI textech**: vždy **Češťyňák** (š, ť) — ne "Čestyňák". V kódu/identifikátorech: `cestynak`. Před commitem zkontrolovat všechny user-facing stringy.
-- **Environment detection**: `OS.has_feature("cestynak-prod")` / `"cestynak-test"` / `"cestynak-dev"` — ne hardcoded checks.
-- **Project Settings**: vždy `get_setting_with_override()`, nikdy `get_setting()`.
-- **Analytics**: každá nová feature nebo důležitý user flow musí mít naplánované analytics eventy od začátku.
+- **Game name in UI texts**: always **Češťyňák** (š, ť) — NOT "Čestyňák". In code/identifiers: `cestynak`. Check all user-facing strings before committing.
+- **Environment detection**: `OS.has_feature("cestynak-prod")` / `"cestynak-test"` / `"cestynak-dev"` — no hardcoded checks.
+- **Project Settings**: always `get_setting_with_override()`, never `get_setting()`.
+- **Analytics**: every new feature or important user flow must have analytics events planned from the start.
 
 ---
 
