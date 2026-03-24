@@ -1,31 +1,25 @@
 #!/usr/bin/env bash
-# install.sh – Installs the `claude-hollow` command globally
+# Installs Claude Hollow — clones the repo here and adds the command to PATH.
 #
-# Creates a symlink in ~/.local/bin/claude-hollow pointing to this repo's hollow.sh.
-# After running this, you can type `claude-hollow` from anywhere.
+# Usage:
+#   curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/main/install.sh | bash
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TARGET="$SCRIPT_DIR/scripts/hollow.sh"
+REPO_URL="https://github.com/GoblikM/claude-hollow.git"
+BRANCH="main"
+DEST="$PWD/claude-hollow"
+
+echo "Cloning Claude Hollow into $DEST ..."
+git clone --branch "$BRANCH" "$REPO_URL" "$DEST"
+
 LINK_DIR="$HOME/.local/bin"
-LINK="$LINK_DIR/claude-hollow"
-
 mkdir -p "$LINK_DIR"
+ln -sf "$DEST/scripts/hollow.sh" "$LINK_DIR/claude-hollow"
 
-if [[ -L "$LINK" ]]; then
-  echo "Updating existing symlink: $LINK"
-  ln -sf "$TARGET" "$LINK"
-elif [[ -e "$LINK" ]]; then
-  echo "❌ $LINK already exists and is not a symlink. Remove it manually first."
-  exit 1
-else
-  ln -s "$TARGET" "$LINK"
-fi
+echo ""
+echo "✅ Installed: claude-hollow → $DEST"
 
-echo "✅ Installed: claude-hollow → $TARGET"
-
-# Check if ~/.local/bin is in PATH
 if [[ ":$PATH:" != *":$LINK_DIR:"* ]]; then
   echo ""
   echo "⚠️  $LINK_DIR is not in your PATH."
