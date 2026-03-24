@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # install.sh – Installs the `office` command globally
 #
-# Creates a symlink in ~/.local/bin/claude-office pointing to this repo's office.sh.
+# Creates a symlink in ~/.local/bin/claude-hollow pointing to this repo's office.sh.
 # After running this, you can type `office` from anywhere.
 
 set -euo pipefail
@@ -9,7 +9,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TARGET="$SCRIPT_DIR/scripts/office.sh"
 LINK_DIR="$HOME/.local/bin"
-LINK="$LINK_DIR/claude-office"
+LINK="$LINK_DIR/claude-hollow"
 
 mkdir -p "$LINK_DIR"
 
@@ -23,7 +23,7 @@ else
   ln -s "$TARGET" "$LINK"
 fi
 
-echo "✅ Installed: claude-office → $TARGET"
+echo "✅ Installed: claude-hollow → $TARGET"
 
 # Check if ~/.local/bin is in PATH
 if [[ ":$PATH:" != *":$LINK_DIR:"* ]]; then
