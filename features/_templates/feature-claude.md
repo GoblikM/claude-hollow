@@ -144,21 +144,55 @@ Archive the task:
 
 ### 6. Hand off to user
 
-All tasks are in `done/` and docs are written. Ask the user:
+All tasks are in `done/` and docs are written.
+
+First, check whether the project has a remote:
+```bash
+git -C {{PROJECT_DIR}} remote
+```
+
+---
+
+**If no remote** — local merge only. Ask the user:
 
 > Feature `{{FEATURE_BRANCH}}` is complete. Should I merge it into `{{MAIN_BRANCH}}` and clean up, or will you do it manually?
 > - **[a] Auto** — I'll merge and clean up
 > - **[m] Manual** — I'll do it myself later (use "Feature done" in claude-hollow menu)
 
-**If auto chosen:**
+If **auto**:
 ```bash
 git -C {{PROJECT_DIR}} checkout {{MAIN_BRANCH}}
 git -C {{PROJECT_DIR}} merge {{FEATURE_BRANCH}}
 ../../../scripts/feature-done.sh {{FEATURE_NAME}}
 ```
 
-**If manual chosen:**
-Inform the user: after merging, select "Feature done" in the claude-hollow project menu to clean up the worktree and branch.
+If **manual**: tell the user to use "Feature done" in the claude-hollow project menu after merging.
+
+---
+
+**If remote exists** — offer a merge/pull request. Ask the user:
+
+> Feature `{{FEATURE_BRANCH}}` is complete. Should I create a merge request, or will you handle it manually?
+> - **[a] Auto** — I'll push the branch and create an MR
+> - **[m] Manual** — I'll do it myself
+
+If **auto**:
+1. Push the branch:
+```bash
+git -C {{PROJECT_DIR}} push -u origin {{FEATURE_BRANCH}}
+```
+2. Check if `gh` CLI is available (`gh --version`).
+   - If yes — create a PR with a descriptive title and body summarizing what was implemented (based on `docs/` and completed tasks):
+     ```bash
+     gh -C {{PROJECT_DIR}} pr create --title "..." --body "..."
+     ```
+   - If no — print the MR title and description for the user to paste into their git hosting platform manually.
+3. Run cleanup:
+```bash
+../../../scripts/feature-done.sh {{FEATURE_NAME}}
+```
+
+If **manual**: push the branch (`git -C {{PROJECT_DIR}} push -u origin {{FEATURE_BRANCH}}`), then tell the user to create the MR and use "Feature done" in the claude-hollow menu after it's merged.
 
 ---
 
