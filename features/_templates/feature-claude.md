@@ -172,11 +172,12 @@ If **manual**: tell the user to use "Feature done" in the claude-hollow project 
 
 **If remote exists** — offer a merge/pull request. Ask the user:
 
-> Feature `{{FEATURE_BRANCH}}` is complete. Should I create a merge request, or will you handle it manually?
-> - **[a] Auto** — I'll push the branch and create an MR
-> - **[m] Manual** — I'll do it myself
+> Feature `{{FEATURE_BRANCH}}` is complete. What would you like to do?
+> - **[a] Auto MR** — push branch and create a merge request
+> - **[p] Push only** — push branch, I'll create the MR myself
+> - **[m] Manual** — I'll handle everything myself
 
-If **auto**:
+If **auto MR**:
 1. Push the branch:
 ```bash
 git -C {{PROJECT_DIR}} push -u origin {{FEATURE_BRANCH}}
@@ -192,7 +193,13 @@ git -C {{PROJECT_DIR}} push -u origin {{FEATURE_BRANCH}}
 ../../../scripts/feature-done.sh {{FEATURE_NAME}}
 ```
 
-If **manual**: push the branch (`git -C {{PROJECT_DIR}} push -u origin {{FEATURE_BRANCH}}`), then tell the user to create the MR and use "Feature done" in the claude-hollow menu after it's merged.
+If **push only**:
+```bash
+git -C {{PROJECT_DIR}} push -u origin {{FEATURE_BRANCH}}
+```
+Then tell the user to create the MR manually and use "Feature done" in the claude-hollow menu after it's merged.
+
+If **manual**: tell the user to push, create the MR, and use "Feature done" in the claude-hollow menu after it's merged.
 
 ---
 
