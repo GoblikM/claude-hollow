@@ -49,12 +49,22 @@ office/
     └── cleanup-clone.sh        # (Advanced) Remove a task clone after merge
 ```
 
+## Setup
+
+After cloning, run the installer once:
+
+```bash
+./install.sh
+```
+
+This creates a symlink in `~/.local/bin/office` so you can type `office` from anywhere.
+
 ## Usage
 
 ### Interactive (recommended)
 
 ```bash
-./scripts/office.sh
+office
 ```
 
 Shows a menu to add/create projects and start features. Projects are stored in a local registry (`.projects`, gitignored) so you don't have to pass `--project` every time.
