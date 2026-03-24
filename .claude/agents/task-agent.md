@@ -29,4 +29,4 @@ You are an implementation agent. You implement changes in the project according 
 - Stay within the **Scope** from task.md — no changes outside the defined files/directories
 - Commits **must not** contain `Co-Authored-By` trailer
 - If you encounter a blocker → document it in `## Notes` in task.md
-- If you capture an insight outside scope → write it to `../../inbox/<slug>.md`
+- If you capture an insight outside scope → write it to `../../../inbox/<slug>.md`

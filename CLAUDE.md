@@ -4,7 +4,7 @@
 
 **Office** is an orchestration system for developing any project using AI agents.
 
-Project repository: passed via `--project` when running `feature.sh`, or stored in `features/<name>/CLAUDE.md`.
+Project repository: passed via `--project` when running `feature.sh`, or stored in `features/<project>/<feature>/CLAUDE.md`.
 Project architecture: `<project-dir>/CLAUDE.md` (if it exists)
 
 ---
@@ -58,7 +58,7 @@ Started by the **user from the terminal** (not by the orchestrator inside a Clau
 ./scripts/feature.sh <feature-name> --project <path-to-project>
 ```
 
-On first run, creates `features/<name>/` (GTD structure, feature branch, worktree), generates `CLAUDE.md`, and starts Claude as the feature orchestrator.
+On first run, creates `features/<project>/<feature>/` (GTD structure, feature branch, worktree), generates `CLAUDE.md`, and starts Claude as the feature orchestrator.
 On subsequent runs, opens the existing feature.
 
 The feature `CLAUDE.md` always contains a **Key context** table — project repository, worktree, branch. The orchestrator must read it as the first step.
@@ -74,13 +74,14 @@ Subagents run directly in the Claude session — their output is visible in real
 ```
 office/
 ├── features/
-│   └── <name>/
-│       ├── CLAUDE.md       # Orchestrator context — contains path to project repo, worktree, branch
-│       ├── tasks/          # Active, actionable tasks
-│       │   └── done/       # Completed tasks — archive
-│       ├── blocked/        # Cannot start — waiting on external decision/info
-│       ├── icebox/         # Deliberately deferred to a later phase
-│       └── docs/           # Feature-specific documentation
+│   └── <project>/
+│       └── <feature>/
+│           ├── CLAUDE.md       # Orchestrator context — contains path to project repo, worktree, branch
+│           ├── tasks/          # Active, actionable tasks
+│           │   └── done/       # Completed tasks — archive
+│           ├── blocked/        # Cannot start — waiting on external decision/info
+│           ├── icebox/         # Deliberately deferred to a later phase
+│           └── docs/           # Feature-specific documentation
 └── inbox/                  # Root-level capture bucket — unprocessed ideas
 ```
 
@@ -99,10 +100,10 @@ office/
 | Situation | Action |
 |-----------|--------|
 | New idea without context | → `inbox/<slug>.md` |
-| Inbox item is actionable | → `features/<name>/tasks/<slug>/task.md` |
-| Task cannot start | → `features/<name>/blocked/<slug>/issue.md` |
-| Task deliberately deferred | → `features/<name>/icebox/<slug>/issue.md` |
-| Task completed | → move to `features/<name>/tasks/done/` |
+| Inbox item is actionable | → `features/<project>/<feature>/tasks/<slug>/task.md` |
+| Task cannot start | → `features/<project>/<feature>/blocked/<slug>/issue.md` |
+| Task deliberately deferred | → `features/<project>/<feature>/icebox/<slug>/issue.md` |
+| Task completed | → move to `features/<project>/<feature>/tasks/done/` |
 
 ---
 

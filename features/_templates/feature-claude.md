@@ -30,7 +30,7 @@ You may only:
 - Move tasks to `done/`
 - Manage GTD structure (inbox, blocked, icebox)
 
-Whenever you encounter a process error or room for improvement (workflow, scripts, templates…), **capture it immediately in `../../inbox/`**. Don't wait for a "right moment".
+Whenever you encounter a process error or room for improvement (workflow, scripts, templates…), **capture it immediately in `../../../inbox/`**. Don't wait for a "right moment".
 
 ---
 
@@ -109,7 +109,7 @@ git -C {{WORKSPACE_DIR}} branch -d task/<slug>
 
 Archive the task:
 ```bash
-../../scripts/task-done.sh {{FEATURE_NAME}} <slug>
+../../../scripts/task-done.sh {{FEATURE_NAME}} <slug>
 ```
 
 ### 5. Feature is complete when
@@ -151,4 +151,4 @@ Every task must have a `## Tests` section with a clear decision:
 
 ### Agent may also:
 - Write a log to their task folder
-- Create `../../inbox/<slug>.md` when capturing an important insight outside scope
+- Create `../../../inbox/<slug>.md` when capturing an important insight outside scope

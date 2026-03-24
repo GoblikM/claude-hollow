@@ -64,16 +64,29 @@ if [[ -z "$FEATURE_NAME" ]]; then
 fi
 
 FEATURE_SLUG=$(slugify "$FEATURE_NAME")
-FEATURE_DIR="$OFFICE_DIR/features/$FEATURE_SLUG"
 
-# If --project not provided and feature exists, load PROJECT_DIR from CLAUDE.md
-if [[ -z "$PROJECT_DIR" ]] && [[ -d "$FEATURE_DIR" ]] && [[ -f "$FEATURE_DIR/CLAUDE.md" ]]; then
-  PROJECT_DIR=$(grep -oP '(?<=\*\* \| `)[^`]+(?=` \|)' "$FEATURE_DIR/CLAUDE.md" | head -1 || true)
+# If --project not provided, search across all project dirs for the feature
+if [[ -z "$PROJECT_DIR" ]]; then
+  for candidate in "$OFFICE_DIR/features"/*/"$FEATURE_SLUG/CLAUDE.md"; do
+    [[ -f "$candidate" ]] || continue
+    found_path=$(grep -oP '(?<=\*\* \| `)[^`]+(?=` \|)' "$candidate" | head -1 || true)
+    [[ -n "$found_path" ]] && PROJECT_DIR="$found_path" && break
+  done
 fi
 
 # ─── Delete mode ─────────────────────────────────────────────────────────────
 
 if [[ "$DELETE_MODE" == true ]]; then
+  # For delete mode, find the feature dir by searching if no project given
+  if [[ -z "$PROJECT_DIR" ]]; then
+    # Search was already done above; if still empty, error
+    echo "Error: feature '$FEATURE_SLUG' not found (no --project given and could not auto-detect)" >&2
+    exit 1
+  fi
+  PROJECT_DIR=$(realpath "$PROJECT_DIR" 2>/dev/null || echo "$PROJECT_DIR")
+  PROJECT_SLUG=$(slugify "$(basename "$PROJECT_DIR")")
+  FEATURE_DIR="$OFFICE_DIR/features/$PROJECT_SLUG/$FEATURE_SLUG"
+
   if [[ ! -d "$FEATURE_DIR" ]]; then
     echo "Error: feature '$FEATURE_SLUG' does not exist" >&2
     exit 1
@@ -115,6 +128,9 @@ if [[ ! -d "$PROJECT_DIR/.git" ]]; then
   echo "Error: '$PROJECT_DIR' is not a git repository" >&2
   exit 1
 fi
+
+PROJECT_SLUG=$(slugify "$(basename "$PROJECT_DIR")")
+FEATURE_DIR="$OFFICE_DIR/features/$PROJECT_SLUG/$FEATURE_SLUG"
 
 # ─── GTD structure initialization ────────────────────────────────────────────
 
