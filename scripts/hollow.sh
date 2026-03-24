@@ -293,8 +293,14 @@ _action_start_feature() {
   read -r -p "  Feature name: " feature_name
   [[ -z "$feature_name" ]] && return
 
+  read -r -p "  Feature goal (optional, one line): " feature_goal
+
   echo ""
-  "$SCRIPT_DIR/feature.sh" "$feature_name" --project "$project_path"
+  if [[ -n "$feature_goal" ]]; then
+    "$SCRIPT_DIR/feature.sh" "$feature_name" --project "$project_path" --goal "$feature_goal"
+  else
+    "$SCRIPT_DIR/feature.sh" "$feature_name" --project "$project_path"
+  fi
   echo ""; read -r -p "  Press Enter to continue..." _
 }
 

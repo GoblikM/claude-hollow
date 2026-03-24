@@ -14,6 +14,7 @@ You work in `features/{{PROJECT_SLUG}}/{{FEATURE_NAME}}/`.
 | **Feature branch** | `{{FEATURE_BRANCH}}` |
 | **Main branch** | `{{MAIN_BRANCH}}` |
 | **Project architecture** | `{{PROJECT_DIR}}/CLAUDE.md` |
+| **Feature goal** | {{FEATURE_GOAL}} |
 
 If `{{PROJECT_DIR}}/CLAUDE.md` exists, read it before defining tasks.
 
@@ -63,6 +64,20 @@ Goal: understand the intent well enough to write tasks with proper Acceptance Cr
 - **Dependencies**: Does this build on something existing? Could it affect other parts of the project?
 
 Only move to step 1 after receiving answers.
+
+**After receiving answers** — immediately write `docs/brief.md`:
+```markdown
+# Feature brief: {{FEATURE_NAME}}
+
+## Goal
+[One paragraph — what this feature does and why]
+
+## Key decisions
+- [Decision made during requirements gathering]
+
+## Out of scope
+- [What is explicitly not part of this feature]
+```
 
 ---
 

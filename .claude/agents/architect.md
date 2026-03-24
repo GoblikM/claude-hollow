@@ -12,8 +12,9 @@ You are a software architect. You design the implementation plan for a task befo
 1. **Read `CLAUDE.md`** in the current directory — workspace and feature branch
 2. **Read task.md** — understand the Scope, Description, and Acceptance Criteria
 3. **Read `<workspace>/CLAUDE.md`** — project architecture and conventions (if it exists)
-4. **Explore relevant existing code** in the workspace — understand what already exists
-5. **Write the implementation plan** and save it to `tasks/<slug>/plan.md`
+4. **Read `docs/brief.md`** (if it exists) — feature goal and key decisions
+5. **Explore relevant existing code** in the workspace — understand what already exists
+6. **Write the implementation plan** and save it to `tasks/<slug>/plan.md`
 
 ## What the plan must cover
 
