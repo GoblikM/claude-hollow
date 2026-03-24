@@ -61,34 +61,33 @@ _pick() {
   }
   trap _pick_cleanup RETURN INT TERM
 
-  tput civis 2>/dev/null || true
+  tput civis 2>/dev/tty || true
   [[ -n "$old_stty" ]] && stty -echo -icanon min 1 time 0 2>/dev/null || true
 
   _pick_draw() {
-    printf '\033[u'  # restore saved cursor position
-    printf "  %s\n" "$title"
+    printf '\033[u'  >/dev/tty
+    printf "  %s\n" "$title" >/dev/tty
     for i in "${!items[@]}"; do
       if [[ $i -eq $cur ]]; then
-        printf "  \033[1;36m❯ %s\033[0m\033[K\n" "${items[$i]}"
+        printf "  \033[1;36m❯ %s\033[0m\033[K\n" "${items[$i]}" >/dev/tty
       else
-        printf "    %s\033[K\n" "${items[$i]}"
+        printf "    %s\033[K\n" "${items[$i]}" >/dev/tty
       fi
     done
-    printf "\n  \033[2m↑↓ navigate   Enter select   q quit\033[0m\033[K"
+    printf "\n  \033[2m↑↓ navigate   Enter select   q quit\033[0m\033[K" >/dev/tty
   }
 
-  echo ""
-  printf '\033[s'  # save cursor position here
+  printf '\n\033[s' >/dev/tty  # blank line + save cursor position
   _pick_draw
 
   local result=""
   while true; do
     local key
-    IFS= read -r -s -n1 key 2>/dev/null || true
+    IFS= read -r -s -n1 key </dev/tty 2>/dev/null || true
 
     if [[ "$key" == $'\x1b' ]]; then
       local seq
-      IFS= read -r -s -n2 -t 0.1 seq 2>/dev/null || true
+      IFS= read -r -s -n2 -t 0.1 seq </dev/tty 2>/dev/null || true
       case "$seq" in
         '[A'|'OA') (( cur > 0 )) && (( cur-- )) ;;
         '[B'|'OB') (( cur < count - 1 )) && (( cur++ )) ;;
@@ -108,7 +107,7 @@ _pick() {
     _pick_draw
   done
 
-  echo ""
+  printf '\n' >/dev/tty
   printf '%s\n' "$result"
 }
 
