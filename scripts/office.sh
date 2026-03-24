@@ -13,8 +13,6 @@ source "$SCRIPT_DIR/lib.sh"
 
 # ─── Registry helpers ─────────────────────────────────────────────────────────
 
-# Format: name|path (one per line)
-
 _registry_load() {
   [[ -f "$REGISTRY" ]] || touch "$REGISTRY"
 }
@@ -28,7 +26,6 @@ _registry_add() {
   local name="$1"
   local path="$2"
   _registry_load
-  # Remove existing entry with same name or path
   local tmp
   tmp=$(grep -v "^${name}|" "$REGISTRY" | grep -v "|${path}$" || true)
   echo "$tmp" > "$REGISTRY"
@@ -43,228 +40,225 @@ _registry_remove() {
   echo "$tmp" > "$REGISTRY"
 }
 
-_registry_get_path() {
-  local name="$1"
-  _registry_load
-  grep "^${name}|" "$REGISTRY" | cut -d'|' -f2 || true
+# ─── Helpers ──────────────────────────────────────────────────────────────────
+
+_short_path() {
+  echo "${1/#$HOME/~}"
 }
 
-# ─── Display ──────────────────────────────────────────────────────────────────
-
-_show_header() {
-  echo ""
-  echo "🏠 Office"
-  echo "─────────────────────────────────────"
+_list_features() {
+  local project_slug="$1"
+  local feature_base="$OFFICE_DIR/features/$project_slug"
+  [[ -d "$feature_base" ]] || return
+  find "$feature_base" -maxdepth 1 -mindepth 1 -type d ! -name '_*' -printf '%f\n' 2>/dev/null | sort
 }
 
-_show_projects() {
+# ─── Screens ──────────────────────────────────────────────────────────────────
+
+_screen_main() {
   local entries
   entries=$(_registry_list)
 
-  if [[ -z "$entries" ]]; then
-    echo "  No projects registered yet."
-    return
+  local names=() paths=()
+  if [[ -n "$entries" ]]; then
+    while IFS='|' read -r name path; do
+      names+=("$name")
+      paths+=("$path")
+    done <<< "$entries"
   fi
 
-  echo "  Projects:"
-  local i=1
-  while IFS='|' read -r name path; do
-    if [[ -d "$path/.git" ]]; then
-      echo "  $i) $name   ($path)"
+  while true; do
+    clear
+    echo ""
+    echo "  🏠  Office"
+    echo "  ──────────────────────────────────────────"
+
+    if [[ ${#names[@]} -eq 0 ]]; then
+      echo ""
+      echo "  No projects yet."
     else
-      echo "  $i) $name   ($path) ⚠️  not found"
+      echo ""
+      echo "  Projects"
+      echo ""
+      for i in "${!names[@]}"; do
+        local num=$(( i + 1 ))
+        local display
+        display=$(_short_path "${paths[$i]}")
+        if [[ -d "${paths[$i]}/.git" ]]; then
+          printf "  [%d] %-20s %s\n" "$num" "${names[$i]}" "$display"
+        else
+          printf "  [%d] %-20s %s  ⚠️  not found\n" "$num" "${names[$i]}" "$display"
+        fi
+      done
     fi
-    ((i++))
-  done <<< "$entries"
+
+    echo ""
+    echo "  ──────────────────────────────────────────"
+    echo "  [a] Add existing project"
+    echo "  [n] Create new project"
+    [[ ${#names[@]} -gt 0 ]] && echo "  [r] Remove project"
+    echo "  [q] Quit"
+    echo ""
+    read -r -p "  › " choice
+
+    case "$choice" in
+      q) echo ""; exit 0 ;;
+      a) _action_add_project && { entries=$(_registry_list); names=(); paths=()
+           [[ -n "$entries" ]] && while IFS='|' read -r n p; do names+=("$n"); paths+=("$p"); done <<< "$entries" ;} ;;
+      n) _action_create_project && { entries=$(_registry_list); names=(); paths=()
+           [[ -n "$entries" ]] && while IFS='|' read -r n p; do names+=("$n"); paths+=("$p"); done <<< "$entries" ;} ;;
+      r) [[ ${#names[@]} -gt 0 ]] && _action_remove_project "${names[@]}" && { entries=$(_registry_list); names=(); paths=()
+           [[ -n "$entries" ]] && while IFS='|' read -r n p; do names+=("$n"); paths+=("$p"); done <<< "$entries" ;} ;;
+      [0-9]*)
+        if (( choice >= 1 && choice <= ${#names[@]} )); then
+          _screen_project "${names[$((choice-1))]}" "${paths[$((choice-1))]}"
+        else
+          echo "  ❌ Invalid choice."; sleep 1
+        fi ;;
+      *) ;;
+    esac
+  done
 }
 
-# ─── Actions ─────────────────────────────────────────────────────────────────
+_screen_project() {
+  local project_name="$1"
+  local project_path="$2"
+  local project_slug
+  project_slug=$(slugify "$project_name")
 
-_add_existing_project() {
+  while true; do
+    local features=()
+    while IFS= read -r f; do
+      [[ -n "$f" ]] && features+=("$f")
+    done < <(_list_features "$project_slug")
+
+    clear
+    echo ""
+    echo "  🏠  Office  ›  $project_name"
+    echo "  ──────────────────────────────────────────"
+    echo "  $(_short_path "$project_path")"
+    echo ""
+
+    if [[ ${#features[@]} -gt 0 ]]; then
+      echo "  Features"
+      echo ""
+      for i in "${!features[@]}"; do
+        printf "  [%d] %s\n" "$(( i + 1 ))" "${features[$i]}"
+      done
+      echo ""
+      echo "  ──────────────────────────────────────────"
+    fi
+
+    echo "  [f] Start new feature"
+    echo "  [b] Back"
+    echo ""
+    read -r -p "  › " choice
+
+    case "$choice" in
+      b) return ;;
+      f) _action_start_feature "$project_name" "$project_path" ;;
+      [0-9]*)
+        if (( choice >= 1 && choice <= ${#features[@]} )); then
+          local feature="${features[$((choice-1))]}"
+          echo ""
+          "$SCRIPT_DIR/feature.sh" "$feature" --project "$project_path"
+          echo ""; read -r -p "  Press Enter to continue..." _
+        else
+          echo "  ❌ Invalid choice."; sleep 1
+        fi ;;
+      *) ;;
+    esac
+  done
+}
+
+# ─── Actions ──────────────────────────────────────────────────────────────────
+
+_action_add_project() {
   echo ""
-  read -e -r -p "Path to existing git repository: " project_path
-  project_path=$(eval echo "$project_path")  # expand ~
+  read -e -r -p "  Path to git repository: " project_path
+  project_path=$(eval echo "$project_path")
+
+  if [[ -z "$project_path" ]]; then return; fi
 
   if [[ ! -d "$project_path/.git" ]]; then
-    echo "❌ '$project_path' is not a git repository."
-    return
+    echo "  ❌ Not a git repository: $project_path"
+    sleep 2; return
   fi
 
   project_path=$(realpath "$project_path")
   local default_name
   default_name=$(basename "$project_path")
 
-  read -r -p "Project name [$default_name]: " project_name
+  read -r -p "  Project name [$default_name]: " project_name
   project_name="${project_name:-$default_name}"
   project_name=$(slugify "$project_name")
 
   _registry_add "$project_name" "$project_path"
-  echo "✅ Project '$project_name' registered."
+  echo "  ✅ Project '$project_name' registered."
+  sleep 1
 }
 
-_create_new_project() {
+_action_create_project() {
   echo ""
-  read -r -p "New project name: " project_name
-  if [[ -z "$project_name" ]]; then
-    echo "❌ Name cannot be empty."
-    return
-  fi
+  read -r -p "  Project name: " project_name
+  if [[ -z "$project_name" ]]; then return; fi
 
   local slug
   slug=$(slugify "$project_name")
 
-  read -e -r -p "Where to create it (directory path): " project_path
-  project_path=$(eval echo "$project_path")  # expand ~
+  read -e -r -p "  Where to create it: " project_path
+  project_path=$(eval echo "$project_path")
 
-  if [[ -z "$project_path" ]]; then
-    echo "❌ Path cannot be empty."
-    return
-  fi
+  if [[ -z "$project_path" ]]; then return; fi
 
   if [[ -d "$project_path/.git" ]]; then
-    echo "❌ '$project_path' already has a git repository."
-    return
+    echo "  ❌ Directory already has a git repository."
+    sleep 2; return
   fi
 
-  echo ""
-  echo "Creating new project '$project_name' at: $project_path"
   mkdir -p "$project_path"
   git -C "$project_path" init -b main --quiet
   git -C "$project_path" commit --allow-empty -m "chore: initial commit" --quiet
 
   project_path=$(realpath "$project_path")
   _registry_add "$slug" "$project_path"
-  echo "✅ Project '$slug' created and registered."
-  echo "   $project_path"
+  echo "  ✅ Project '$slug' created at $(_short_path "$project_path")"
+  sleep 1
 }
 
-_remove_project() {
-  local entries
-  entries=$(_registry_list)
-
-  if [[ -z "$entries" ]]; then
-    echo "  No projects to remove."
-    return
-  fi
+_action_remove_project() {
+  local names=("$@")
 
   echo ""
-  echo "  Which project to remove?"
-  local names=()
-  local i=1
-  while IFS='|' read -r name path; do
-    echo "  $i) $name   ($path)"
-    names+=("$name")
-    ((i++))
-  done <<< "$entries"
-  echo "  q) Cancel"
+  echo "  Remove which project?"
   echo ""
-
-  read -r -p "Choice: " choice
-  [[ "$choice" == "q" ]] && return
+  for i in "${!names[@]}"; do
+    printf "  [%d] %s\n" "$(( i + 1 ))" "${names[$i]}"
+  done
+  echo ""
+  read -r -p "  › " choice
 
   if [[ "$choice" =~ ^[0-9]+$ ]] && (( choice >= 1 && choice <= ${#names[@]} )); then
     local name="${names[$((choice-1))]}"
     _registry_remove "$name"
-    echo "✅ Project '$name' removed from registry (directory untouched)."
-  else
-    echo "❌ Invalid choice."
+    echo "  ✅ '$name' removed (directory untouched)."
+    sleep 1
   fi
 }
 
-_start_feature() {
+_action_start_feature() {
   local project_name="$1"
   local project_path="$2"
 
   echo ""
-  read -r -p "Feature name: " feature_name
-  if [[ -z "$feature_name" ]]; then
-    echo "❌ Feature name cannot be empty."
-    return
-  fi
+  read -r -p "  Feature name: " feature_name
+  if [[ -z "$feature_name" ]]; then return; fi
 
   echo ""
   "$SCRIPT_DIR/feature.sh" "$feature_name" --project "$project_path"
+  echo ""; read -r -p "  Press Enter to continue..." _
 }
 
-_select_project() {
-  local entries
-  entries=$(_registry_list)
+# ─── Entry point ──────────────────────────────────────────────────────────────
 
-  if [[ -z "$entries" ]]; then
-    echo "  No projects registered. Add one first."
-    return
-  fi
-
-  local names=()
-  local paths=()
-  local i=1
-  while IFS='|' read -r name path; do
-    names+=("$name")
-    paths+=("$path")
-    ((i++))
-  done <<< "$entries"
-
-  echo ""
-  read -r -p "Select project number: " choice
-
-  if [[ "$choice" =~ ^[0-9]+$ ]] && (( choice >= 1 && choice <= ${#names[@]} )); then
-    local name="${names[$((choice-1))]}"
-    local path="${paths[$((choice-1))]}"
-
-    if [[ ! -d "$path/.git" ]]; then
-      echo "❌ Project path not found: $path"
-      return
-    fi
-
-    echo ""
-    echo "Project: $name ($path)"
-    echo ""
-    echo "  f) Start a feature"
-    echo "  q) Back"
-    read -r -p "Action: " action
-
-    case "$action" in
-      f) _start_feature "$name" "$path" ;;
-      q) return ;;
-      *) echo "❌ Unknown action." ;;
-    esac
-  else
-    echo "❌ Invalid choice."
-  fi
-}
-
-# ─── Main loop ────────────────────────────────────────────────────────────────
-
-while true; do
-  _show_header
-  _show_projects
-  echo ""
-  echo "  a) Add existing project"
-  echo "  n) Create new project"
-  echo "  r) Remove project"
-  echo "  q) Quit"
-  echo ""
-  read -r -p "Choice: " choice
-
-  case "$choice" in
-    [0-9]*)
-      _select_project
-      ;;
-    a)
-      _add_existing_project
-      ;;
-    n)
-      _create_new_project
-      ;;
-    r)
-      _remove_project
-      ;;
-    q)
-      echo ""
-      exit 0
-      ;;
-    *)
-      echo "❌ Unknown choice."
-      ;;
-  esac
-done
+_screen_main
