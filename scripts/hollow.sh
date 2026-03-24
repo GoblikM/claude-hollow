@@ -69,7 +69,7 @@ _screen_main() {
 
     clear
     echo ""
-    echo "  🏠  Claude Hollow"
+    echo "  🎮  Češťyňák Hollow"
     echo "  ──────────────────────────────────────────"
 
     if [[ ${#names[@]} -eq 0 ]]; then
@@ -129,7 +129,7 @@ _screen_project() {
 
     clear
     echo ""
-    echo "  🏠  Claude Hollow  ›  $project_name"
+    echo "  🎮  Češťyňák Hollow  ›  $project_name"
     echo "  ──────────────────────────────────────────"
     echo "  $(_short_path "$project_path")"
 
@@ -173,7 +173,7 @@ _screen_project() {
 _action_add_project() {
   clear
   echo ""
-  echo "  🏠  Claude Hollow  ›  Add project"
+  echo "  🎮  Češťyňák Hollow  ›  Add project"
   echo "  ──────────────────────────────────────────"
   echo ""
   read -e -r -p "  Path to git repository: " project_path
@@ -201,7 +201,7 @@ _action_add_project() {
 _action_create_project() {
   clear
   echo ""
-  echo "  🏠  Claude Hollow  ›  Create project"
+  echo "  🎮  Češťyňák Hollow  ›  Create project"
   echo "  ──────────────────────────────────────────"
   echo ""
   read -r -p "  Project name: " project_name
@@ -233,7 +233,7 @@ _action_remove_project() {
   local names=("$@")
   clear
   echo ""
-  echo "  🏠  Claude Hollow  ›  Remove project"
+  echo "  🎮  Češťyňák Hollow  ›  Remove project"
   echo "  ──────────────────────────────────────────"
   echo ""
   for i in "${!names[@]}"; do
@@ -260,7 +260,7 @@ _action_feature_done() {
 
   clear
   echo ""
-  echo "  🏠  Claude Hollow  ›  $project_name  ›  Feature done"
+  echo "  🎮  Češťyňák Hollow  ›  $project_name  ›  Feature done"
   echo "  ──────────────────────────────────────────"
   echo ""
   echo "  Select the feature to clean up (after merging to main):"
@@ -287,7 +287,7 @@ _action_start_feature() {
 
   clear
   echo ""
-  echo "  🏠  Claude Hollow  ›  $project_name  ›  New feature"
+  echo "  🎮  Češťyňák Hollow  ›  $project_name  ›  New feature"
   echo "  ──────────────────────────────────────────"
   echo ""
   read -r -p "  Feature name: " feature_name

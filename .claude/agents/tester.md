@@ -27,6 +27,26 @@ Steps for discovering tests:
 3. Look for common files: `package.json` (scripts), `pytest.ini`, `go.mod`, `Cargo.toml`, `.github/workflows/`
 4. If no tests exist → report SKIP with justification
 
+### Godot projects — GUT framework
+
+If the workspace contains `project.godot` and `addons/gut/`:
+
+**Run all tests (headless):**
+```bash
+godot_4 --headless -s addons/gut/gut_cmdln.gd -gdir=res://tests -ginclude_subdirs -gprefix=t_ -gexit
+```
+Try executable names in order: `godot`, `godot4`, `godot_4` — use whichever exists in PATH.
+
+**Run a specific test file:**
+```bash
+godot_4 --headless -s addons/gut/gut_cmdln.gd -gtest=res://tests/<path/to/t_file.gd> -gexit
+```
+
+**Test file conventions:**
+- Active tests: `t_*.gd` in `tests/` (including subdirs)
+- Disabled tests: `disabled_t_*.gd` — do NOT rename or run these
+- New test files must follow the `t_` prefix convention
+
 ## Output
 
 ```

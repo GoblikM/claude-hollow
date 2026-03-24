@@ -31,3 +31,13 @@ You are an implementation agent. You implement changes in the project according 
 - Commits **must not** contain `Co-Authored-By` trailer
 - If you encounter a blocker → document it in `## Notes` in task.md
 - If you capture an insight outside scope → write it to `../../../inbox/<slug>.md`
+
+### Godot projects
+
+If working in a Godot project (workspace contains `project.godot`):
+- **Never modify** files in `.godot/` — auto-generated engine cache, not source
+- **Never modify** `.import` files — auto-generated asset imports
+- **Use GDScript** (`.gd` files) — no C# unless the project already uses it
+- **Naming conventions**: `snake_case` for variables/functions/signals, `PascalCase` for class names
+- **New test files** go in `tests/` with `t_` prefix (e.g. `tests/t_my_feature.gd`)
+- **Scene files** (`.tscn`) can be modified, but prefer script-only changes where possible

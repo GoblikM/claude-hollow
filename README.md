@@ -1,6 +1,6 @@
-# Claude Hollow
+# Češťyňák — Claude Hollow
 
-AI agent orchestration system for software development. Combines GTD task management with automated agent orchestration — no containers required.
+AI agent orchestration for the Češťyňák game project. Based on [Claude Hollow](https://github.com/GoblikM/claude-hollow) (`main` branch) — this branch adds Godot/GDScript conventions, GUT test runner, and Češťyňák-specific context (core principles, game name, analytics, environment detection).
 
 ## How it works
 
@@ -21,17 +21,17 @@ The orchestrator **never writes code itself** — that is exclusively the role o
 
 **Linux / macOS:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/main/install/unix.sh | bash
 ```
 
 **Windows CMD:**
 ```cmd
-curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/main/install.cmd -o install.cmd && install.cmd && del install.cmd
+curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/main/install/windows.cmd -o install.cmd && install.cmd && del install.cmd
 ```
 
 **Windows PowerShell:**
 ```powershell
-irm https://raw.githubusercontent.com/GoblikM/claude-hollow/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/GoblikM/claude-hollow/main/install/windows.ps1 | iex
 ```
 
 Run the command from the directory where you want the repo cloned. Restart your terminal after install.
@@ -42,20 +42,16 @@ Run the command from the directory where you want the repo cloned. Restart your 
 claude-hollow
 ```
 
-Interactive menu to add/create projects and start features.
-
 ```
-🏠  Claude Hollow
+🎮  Češťyňák Hollow
 ──────────────────────────────────────────
 
   Projects
 
-  [1] my-app          ~/dev/my-app
-  [2] my-api          ~/dev/my-api
+  [1] cestynak          ~/dev/cestynak
 
   ──────────────────────────────────────────
   [a] Add existing project
-  [n] Create new project
   [q] Quit
 ```
 
@@ -65,7 +61,7 @@ Select a project → see its features → start or resume one.
 
 ```bash
 # New feature
-./scripts/feature.sh my-feature --project /path/to/project
+./scripts/feature.sh my-feature --project /path/to/cestynak
 
 # Reopen existing feature
 ./scripts/feature.sh my-feature
@@ -74,10 +70,21 @@ Select a project → see its features → start or resume one.
 ./scripts/feature.sh -D my-feature
 ```
 
+## What's different from main
+
+| | `main` | `cestynak-hollow` |
+|---|---|---|
+| Menu title | Claude Hollow | Češťyňák Hollow |
+| Core principles | Generic | Češťyňák-specific (7 principles) |
+| Game conventions | — | Name, environment detection, settings, analytics |
+| Test runner | Generic discovery | GUT (headless, `t_` prefix) |
+| Code review | Generic | + GDScript conventions |
+| Task agent | Generic | + Godot file rules (.godot/, .import) |
+
 ## Structure
 
 ```
-claude-hollow/
+cestynak-hollow/
 ├── CLAUDE.md                   # Orchestrator context
 ├── install.sh                  # Installs the claude-hollow command
 ├── features/
@@ -97,8 +104,7 @@ claude-hollow/
     ├── feature.sh              # Initialize a feature workspace and git worktree
     ├── lib.sh                  # Shared utilities
     ├── task-done.sh            # Move a completed task to done/
-    ├── cc.sh                   # (Advanced) Run a task agent in an isolated clone
-    └── cleanup-clone.sh        # (Advanced) Remove a task clone after merge
+    └── feature-done.sh         # Cleanup after feature merge
 ```
 
 ## Agent pipeline
@@ -109,24 +115,11 @@ Each task goes through the following subagents in order:
 |-------|------|------|
 | `@architect` | Complex tasks | Reads task + existing code, writes `plan.md` with approach, files, risks |
 | `@task-agent` | Always | Implements changes, writes tests, commits to `task/<slug>` branch |
-| `@code-reviewer` | Always | Reviews diff, verifies AC, conventions, and tests |
-| `@tester` | Always | Runs tests, reports PASS / FAIL / SKIP |
-
-## GTD structure
-
-| Folder | Meaning |
-|--------|---------|
-| `tasks/` | Actionable, ready to run |
-| `tasks/done/` | Completed (archive) |
-| `blocked/` | Waiting on something external |
-| `icebox/` | Intentionally deferred |
-| `inbox/` | Unprocessed — review and move ASAP |
-
-## Local data
-
-`features/` and `inbox/` are gitignored — task data stays on your machine. The repo only tracks the tool itself (scripts, templates, agent definitions), so Claude Hollow works for any project without mixing task data into version control.
+| `@code-reviewer` | Always | Reviews diff, verifies AC, GDScript conventions, and tests |
+| `@tester` | Always | Runs GUT tests headlessly, reports PASS / FAIL / SKIP |
 
 ## Requirements
 
 - [Claude Code CLI](https://claude.ai/code) — `claude` in PATH
 - Git
+- Godot 4.6.1 — `godot` in PATH (for running tests)
