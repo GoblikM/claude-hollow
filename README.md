@@ -40,6 +40,7 @@ office/
 │       └── docs/               # Feature documentation written after completion
 ├── inbox/                      # Quick capture — local only, not tracked in git
 └── scripts/
+    ├── office.sh               # Interactive entry point — manage projects and start features
     ├── feature.sh              # Initialize a feature workspace and git worktree
     ├── lib.sh                  # Shared utilities (branch detection, slugify, etc.)
     ├── task-done.sh            # Move a completed task to done/
@@ -48,6 +49,16 @@ office/
 ```
 
 ## Usage
+
+### Interactive (recommended)
+
+```bash
+./scripts/office.sh
+```
+
+Shows a menu to add/create projects and start features. Projects are stored in a local registry (`.projects`, gitignored) so you don't have to pass `--project` every time.
+
+### Direct
 
 ```bash
 # New feature (requires --project)

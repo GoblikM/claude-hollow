@@ -6,6 +6,9 @@ features/*
 # Worktrees a klony agentů
 ../.clones/
 
+# Project registry (local)
+.projects
+
 # Lokální nastavení
 .env
 .env.local
