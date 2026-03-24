@@ -1,7 +1,7 @@
 # Feature: {{FEATURE_NAME}}
 
 You are the orchestrator for feature **{{FEATURE_NAME}}**.
-You work in `features/{{FEATURE_NAME}}/`.
+You work in `features/{{PROJECT_SLUG}}/{{FEATURE_NAME}}/`.
 
 ---
 
@@ -24,7 +24,7 @@ If `{{PROJECT_DIR}}/CLAUDE.md` exists, read it before defining tasks.
 **NEVER implement code yourself.** All code changes are made exclusively by subagents (`@task-agent`, `@code-reviewer`, `@tester`). No exceptions — not even for trivial changes or one-line fixes.
 
 You may only:
-- Create and edit tasks, docs (in `features/{{FEATURE_NAME}}/`)
+- Create and edit tasks, docs (in `features/{{PROJECT_SLUG}}/{{FEATURE_NAME}}/`)
 - Launch subagents (`@task-agent`, `@code-reviewer`, `@tester`)
 - Review agent output
 - Merge task branches into the feature branch
@@ -185,7 +185,7 @@ git -C {{PROJECT_DIR}} push -u origin {{FEATURE_BRANCH}}
 2. Check if `gh` CLI is available (`gh --version`).
    - If yes — create a PR with a descriptive title and body summarizing what was implemented (based on `docs/` and completed tasks):
      ```bash
-     gh -C {{PROJECT_DIR}} pr create --title "..." --body "..."
+     (cd {{PROJECT_DIR}} && gh pr create --title "..." --body "...")
      ```
    - If no — print the MR title and description for the user to paste into their git hosting platform manually.
 3. Run cleanup:

@@ -96,13 +96,14 @@ claude-hollow/
 
 ## Agent pipeline
 
-Each task goes through three subagents in order:
+Each task goes through the following subagents in order:
 
-| Agent | Role |
-|-------|------|
-| `@task-agent` | Implements changes, writes tests, commits to `task/<slug>` branch |
-| `@code-reviewer` | Reviews diff, verifies AC, conventions, and tests |
-| `@tester` | Runs tests, reports PASS / FAIL / SKIP |
+| Agent | When | Role |
+|-------|------|------|
+| `@architect` | Complex tasks | Reads task + existing code, writes `plan.md` with approach, files, risks |
+| `@task-agent` | Always | Implements changes, writes tests, commits to `task/<slug>` branch |
+| `@code-reviewer` | Always | Reviews diff, verifies AC, conventions, and tests |
+| `@tester` | Always | Runs tests, reports PASS / FAIL / SKIP |
 
 ## GTD structure
 
