@@ -4,8 +4,8 @@
 
 **Čestyňák** je vzdělávací hra pro děti zaměřená na češtinu.
 
-Repozitář hry: `/c/Users/goldb/dev/cestynak`
-Architektura a konvence hry: `/c/Users/goldb/dev/cestynak/CLAUDE.md`
+Repozitář hry: `../cestynak` (sesterský adresář vedle `office/`)
+Architektura a konvence hry: `../cestynak/CLAUDE.md`
 
 ---
 
