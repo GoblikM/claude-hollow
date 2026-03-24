@@ -86,7 +86,7 @@ claude-hollow/
 │           └── docs/           # Feature documentation
 ├── inbox/                      # Quick capture — local only, not tracked in git
 └── scripts/
-    ├── office.sh               # Main entry point (launched as claude-hollow)
+    ├── hollow.sh               # Main entry point (launched as claude-hollow)
     ├── feature.sh              # Initialize a feature workspace and git worktree
     ├── lib.sh                  # Shared utilities
     ├── task-done.sh            # Move a completed task to done/

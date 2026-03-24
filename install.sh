@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # install.sh – Installs the `claude-hollow` command globally
 #
-# Creates a symlink in ~/.local/bin/claude-hollow pointing to this repo's office.sh.
+# Creates a symlink in ~/.local/bin/claude-hollow pointing to this repo's hollow.sh.
 # After running this, you can type `claude-hollow` from anywhere.
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TARGET="$SCRIPT_DIR/scripts/office.sh"
+TARGET="$SCRIPT_DIR/scripts/hollow.sh"
 LINK_DIR="$HOME/.local/bin"
 LINK="$LINK_DIR/claude-hollow"
 

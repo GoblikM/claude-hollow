@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# office.sh – Main entry point for Claude Hollow
+# hollow.sh – Main entry point for Claude Hollow
 #
 # Usage:
-#   ./scripts/office.sh
+#   ./scripts/hollow.sh
 
 set -euo pipefail
 
