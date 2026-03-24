@@ -57,14 +57,14 @@ After cloning, run the installer once:
 ./install.sh
 ```
 
-This creates a symlink in `~/.local/bin/office` so you can type `office` from anywhere.
+This creates a symlink in `~/.local/bin/claude-office` so you can type `claude-office` from anywhere.
 
 ## Usage
 
 ### Interactive (recommended)
 
 ```bash
-office
+claude-office
 ```
 
 Shows a menu to add/create projects and start features. Projects are stored in a local registry (`.projects`, gitignored) so you don't have to pass `--project` every time.
