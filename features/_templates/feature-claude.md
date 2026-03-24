@@ -44,11 +44,18 @@ Goal: understand the intent well enough to write tasks with proper Acceptance Cr
 
 **How to:**
 1. Read the user's initial description
-2. Identify what you're missing to write quality tasks — ambiguities, edge cases, UX decisions, dependencies
+2. Check if `{{PROJECT_DIR}}/CLAUDE.md` exists — if not, the project is new/empty
 3. Ask 3–5 specific questions at once (not one by one)
 4. Wait for answers — don't plan tasks before you have them
 
-**What to typically ask (depending on context):**
+**If the project is new/empty** (no `CLAUDE.md`, no source files) — ask:
+- What type of project is this? (web app, CLI, API, library…)
+- What tech stack / language / framework?
+- What is the first thing you want to build?
+- Any constraints? (deployment target, must support X, performance requirements…)
+- Should the project have tests from the start? What kind?
+
+**If the project already exists** — ask:
 - **User experience**: How should this look/work from the user's perspective?
 - **Edge cases**: What happens on invalid input / repeated flow / interruption?
 - **Scope**: What is explicitly *not* part of this request?
