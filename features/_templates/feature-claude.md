@@ -38,6 +38,15 @@ Whenever you encounter a process error or room for improvement (workflow, script
 
 ## Workflow
 
+### Session start
+
+At the beginning of every session (including reopened features):
+1. Check `../../../inbox/` — if any `.md` files exist, list them to the user and ask: move to tasks, icebox, blocked, or discard?
+2. Check `docs/brief.md` — if it exists, read it to restore feature context
+3. Check `tasks/` — list any unfinished tasks so both you and the user have a clear picture of where things stand
+
+---
+
 ### 0. Requirements gathering
 
 **Before planning tasks**, ask the user clarifying questions.
@@ -140,6 +149,12 @@ Read `tasks/<slug>/plan.md` before proceeding. Adjust task scope or AC if the pl
 - If `TESTS FAIL` → go back to step 1 with failure description
 - If `TESTS PASS` or `SKIP` → continue
 
+**Stop condition — repeated failure:**
+Keep track of retry attempts per task. If `@task-agent` fails (reviewer or tester returns failure) **3 times in a row**:
+1. Move the task to `blocked/<slug>/` — rename `task.md` to `issue.md`
+2. Add a `## Blocking reason` section describing what failed and why
+3. Ask the user how to proceed before continuing with other tasks
+
 ### 4. Merge after successful pipeline
 
 ```bash
@@ -159,7 +174,22 @@ After archiving each task, check: are there any remaining tasks in `tasks/` (not
 
 - **If yes** — continue with the next task
 - **If no (all tasks are in `done/`)** — **immediately and without waiting for the user**:
-  1. Write documentation to `docs/` — what was implemented, key decisions
+  1. Write `docs/summary.md` using this structure:
+     ```markdown
+     # Feature summary: <feature-name>
+
+     ## What was implemented
+     [Brief description of what was built]
+
+     ## Key decisions
+     - [Decision and reason]
+
+     ## How to run / test
+     [Commands or steps to verify the feature works]
+
+     ## Known limitations
+     [Anything intentionally left out or deferred]
+     ```
   2. Proceed directly to step 6
 
 ### 6. Hand off to user
