@@ -2,7 +2,6 @@
 inbox/
 features/*
 !features/_templates/
-reviews/
 
 # Worktrees and agent clones
 ../.clones/
