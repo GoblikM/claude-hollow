@@ -282,6 +282,16 @@ Every task must have a `## Tests` section with a clear decision:
 - **Required: yes** — when the task contains logic (functions, data processing, business rules). Describe what to test and where test files go.
 - **Required: no** — for pure UI changes, config-only changes, documentation, or trivial one-liners. Always include a brief reason.
 
+### Code quality
+
+When writing tasks that involve code changes, remind the agent to follow **Clean Code principles**:
+- Meaningful names (variables, functions, files)
+- Small, single-purpose functions
+- Single responsibility per module/class
+- No duplication (DRY)
+- No magic values — use named constants
+- Minimal and meaningful comments
+
 ### Agent may also:
 - Write a log to their task folder
 - Create `../../../inbox/<slug>.md` when capturing an important insight outside scope
