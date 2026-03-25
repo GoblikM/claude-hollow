@@ -210,9 +210,11 @@ _action_create_project() {
   local slug
   slug=$(slugify "$project_name")
 
-  read -e -r -p "  Where to create it: " project_path
-  project_path=$(eval echo "$project_path")
-  [[ -z "$project_path" ]] && return
+  read -e -r -p "  Where to create it: " base_path
+  base_path=$(eval echo "$base_path")
+  [[ -z "$base_path" ]] && return
+
+  local project_path="$base_path/$slug"
 
   if [[ -d "$project_path/.git" ]]; then
     echo "  ❌ Directory already has a git repository."
