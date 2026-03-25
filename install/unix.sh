@@ -1,21 +1,38 @@
 #!/usr/bin/env bash
-# Installs Claude Hollow — clones the repo here and adds the command to PATH.
+# Installs or updates Claude Hollow — clones the repo and adds the command to PATH.
+# Run again at any time to update to the latest version.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/main/install/unix.sh | bash
 
 set -euo pipefail
 
 REPO_URL="https://github.com/GoblikM/claude-hollow.git"
 BRANCH="main"
-DEST="$PWD/claude-hollow"
+LINK_DIR="$HOME/.local/bin"
+LINK="$LINK_DIR/claude-hollow"
 
-echo "Cloning Claude Hollow into $DEST ..."
+# Detect existing installation via the symlink
+if [[ -L "$LINK" ]]; then
+  SCRIPT_PATH="$(readlink -f "$LINK")"
+  DEST="$(dirname "$(dirname "$SCRIPT_PATH")")"
+
+  if [[ -d "$DEST/.git" ]]; then
+    echo "Updating Claude Hollow in $DEST ..."
+    git -C "$DEST" pull --ff-only origin "$BRANCH"
+    echo ""
+    echo "✅ Updated: claude-hollow → $DEST"
+    exit 0
+  fi
+fi
+
+# Fresh install
+DEST="$PWD/claude-hollow"
+echo "Installing Claude Hollow into $DEST ..."
 git clone --branch "$BRANCH" "$REPO_URL" "$DEST"
 
-LINK_DIR="$HOME/.local/bin"
 mkdir -p "$LINK_DIR"
-ln -sf "$DEST/scripts/hollow.sh" "$LINK_DIR/claude-hollow"
+ln -sf "$DEST/scripts/hollow.sh" "$LINK"
 
 echo ""
 echo "✅ Installed: claude-hollow → $DEST"

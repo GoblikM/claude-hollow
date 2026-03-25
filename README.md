@@ -24,17 +24,10 @@ The orchestrator **never writes code itself** — that is exclusively the role o
 curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/main/install/unix.sh | bash
 ```
 
-**Windows CMD:**
-```cmd
-curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/main/install/windows.cmd -o install.cmd && install.cmd && del install.cmd
-```
+Run the same command again to update to the latest version.
 
-**Windows PowerShell:**
-```powershell
-irm https://raw.githubusercontent.com/GoblikM/claude-hollow/main/install/windows.ps1 | iex
-```
 
-Run the command from the directory where you want the repo cloned. Restart your terminal after install.
+On fresh install, run the command from the directory where you want the repo cloned. Restart your terminal after install.
 
 ## Usage
 
@@ -79,7 +72,7 @@ claude-hollow feature -D my-feature
 ```
 claude-hollow/
 ├── CLAUDE.md                   # Orchestrator context
-├── install/                    # One-liner install scripts (unix.sh, windows.cmd, windows.ps1)
+├── install/                    # One-liner install script (unix.sh)
 ├── bin/
 │   └── hollow.js               # Entry point
 ├── src/                        # Node.js source modules
