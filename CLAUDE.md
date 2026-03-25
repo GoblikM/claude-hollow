@@ -129,7 +129,7 @@ claude-hollow/
 
 ### Claude Hollow
 
-- All changes committed directly to `main`, pushed immediately (push happens automatically via hook)
+- All changes committed directly to `main`, pushed manually
 - Always a new commit, never `--amend` on a published commit
 - Commit messages are in **English**
 - Commits **do not contain** `Co-Authored-By` trailer
