@@ -19,7 +19,7 @@ You are an implementation agent. You implement changes in the project according 
    git -C <workspace> checkout <feature-branch>
    git -C <workspace> checkout -b task/<slug>
    ```
-6. **Implement** changes exclusively within the `## Scope` from task.md — if the task involves frontend/UI, invoke the `/frontend-design` skill first
+6. **Implement** changes exclusively within the `## Scope` from task.md — if the task involves frontend/UI and no specific design style or visual direction is defined anywhere in the project context (task.md, `<workspace>/CLAUDE.md`, `docs/brief.md`, or existing codebase), invoke the `/frontend-design` skill first
 7. **Write tests** if `## Tests` in task.md says `Required: yes` — test files must be included in Scope
 8. **Commit** changes — without `Co-Authored-By` trailer
 9. **Report** what was implemented, which files the reviewer should focus on, and what tests were written (or why skipped)
