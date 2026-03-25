@@ -55,7 +55,9 @@ Goal: understand the intent well enough to write tasks with proper Acceptance Cr
 
 **How to:**
 1. Read the user's initial description
-2. Check if `{{PROJECT_DIR}}/CLAUDE.md` exists — if not, the project is new/empty
+2. Check if `{{PROJECT_DIR}}/CLAUDE.md` exists:
+   - **If it exists** → read it; ask feature-specific questions (see "If the project already exists" below)
+   - **If it does not exist** → the project was not initialized via `Init project`; ask setup questions (type, stack, conventions, tests) and plan a `project-setup` task as the first task
 3. Ask 3–5 specific questions at once (not one by one)
 4. Wait for answers — don't plan tasks before you have them
 
@@ -92,7 +94,7 @@ Only move to step 1 after receiving answers.
 
 ### 1. Planning
 - Read `{{PROJECT_DIR}}/CLAUDE.md` for architecture context (if it exists)
-- **If the project is new/empty** (no `CLAUDE.md`, no source files): suggest creating a `project-setup` task first — scaffold the project structure and create `{{PROJECT_DIR}}/CLAUDE.md` with conventions, tech stack, and how to run tests
+- **If `{{PROJECT_DIR}}/CLAUDE.md` does not exist**: suggest creating a `project-setup` task first — scaffold the project structure and create `{{PROJECT_DIR}}/CLAUDE.md` with conventions, tech stack, and how to run tests
 - Break down the requirement into concrete tasks with clear acceptance criteria
 - Create `tasks/<slug>/task.md` for each task
 

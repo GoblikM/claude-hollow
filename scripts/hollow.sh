@@ -52,6 +52,10 @@ _list_features() {
   done < <(find "$feature_base" -maxdepth 1 -mindepth 1 -type d ! -name '_*' -printf '%f\n' 2>/dev/null | sort)
 }
 
+_is_initialized() {
+  [[ -f "$1/CLAUDE.md" ]]
+}
+
 # ─── Screens ──────────────────────────────────────────────────────────────────
 
 _screen_main() {
@@ -144,6 +148,9 @@ _screen_project() {
 
     echo ""
     echo "  ──────────────────────────────────────────"
+    if ! _is_initialized "$project_path"; then
+      echo "  [i] Init project"
+    fi
     echo "  [f] Start new feature"
     [[ ${#features[@]} -gt 0 ]] && echo "  [d] Feature done (cleanup after merge)"
     echo "  [b] Back"
@@ -152,6 +159,7 @@ _screen_project() {
 
     case "$choice" in
       b) return ;;
+      i) ! _is_initialized "$project_path" && _action_init_project "$project_name" "$project_path" ;;
       f) _action_start_feature "$project_name" "$project_path" ;;
       d) [[ ${#features[@]} -gt 0 ]] && _action_feature_done "$project_name" "$project_path" "${features[@]}" ;;
       [0-9]*)
@@ -281,6 +289,42 @@ _action_feature_done() {
     "$SCRIPT_DIR/feature-done.sh" "$feature" --project "$project_path"
     echo ""; read -r -p "  Press Enter to continue..." _
   fi
+}
+
+_action_init_project() {
+  local project_name="$1"
+  local project_path="$2"
+
+  local template="$OFFICE_DIR/features/_templates/init-claude.md"
+  if [[ ! -f "$template" ]]; then
+    echo "  ❌ Template not found: $template"
+    sleep 2; return
+  fi
+
+  local sentinel="__CLAUDE_HOLLOW_INIT__"
+  local rendered
+  rendered=$(sed \
+    -e "s|{{PROJECT_DIR}}|$project_path|g" \
+    -e "s|{{PROJECT_NAME}}|$project_name|g" \
+    "$template")
+
+  printf '%s\n\n%s\n' "$sentinel" "$rendered" > "$project_path/CLAUDE.md"
+
+  clear
+  echo ""
+  echo "  🏠  Claude Hollow  ›  $project_name  ›  Init project"
+  echo "  ──────────────────────────────────────────"
+  echo ""
+  echo "  Claude will ask you about your project and write CLAUDE.md."
+  echo ""
+
+  (cd "$project_path" && claude)
+
+  if [[ -f "$project_path/CLAUDE.md" ]] && head -1 "$project_path/CLAUDE.md" | grep -q "$sentinel"; then
+    rm "$project_path/CLAUDE.md"
+  fi
+
+  echo ""; read -r -p "  Press Enter to continue..." _
 }
 
 _action_start_feature() {
