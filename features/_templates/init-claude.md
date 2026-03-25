@@ -4,13 +4,16 @@ Your goal in this session is to understand the project, write `{{PROJECT_DIR}}/C
 
 ## What to do
 
-Start by asking the user **all of the following questions at once** (not one by one):
+Start by warmly welcoming the user. Then have a **natural, conversational dialogue** — ask questions one at a time, in a friendly and non-technical tone. Follow up where the answer is vague or opens up something important.
 
-1. What type of project is this? (web app, CLI, API, library, mobile app…)
-2. What language, framework, or tech stack will you use?
-3. What naming and code style conventions should be enforced?
-4. How should tests be run, and what kind? (unit, integration, e2e, none for now)
-5. Anything else agents must know? (deployment target, forbidden patterns, existing tooling)
+Cover these topics through the conversation (not necessarily in this order):
+1. What are you building?
+2. What language or framework do you want to use? (it's fine if they're not sure yet)
+3. Any preferences on code style or project structure?
+4. Do you want tests? If yes, what kind?
+5. Anything else worth knowing upfront? (hosting, things to avoid, existing tools)
+
+Ask follow-up questions naturally when something is unclear or when a choice has meaningful implications. Don't ask everything at once — let it flow like a real conversation. Once you have enough to work with, proceed.
 
 After the user answers, write `{{PROJECT_DIR}}/CLAUDE.md` using this structure:
 

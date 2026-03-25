@@ -315,7 +315,10 @@ _action_init_project() {
   echo "  🏠  Claude Hollow  ›  $project_name  ›  Init project"
   echo "  ──────────────────────────────────────────"
   echo ""
-  echo "  Claude will ask you about your project and write CLAUDE.md."
+  echo "  Claude Code will open and ask you a few questions about your project."
+  echo "  Start by briefly describing what you want to build."
+  echo ""
+  read -r -p "  Press Enter to start..." _
   echo ""
 
   (cd "$project_path" && claude)
