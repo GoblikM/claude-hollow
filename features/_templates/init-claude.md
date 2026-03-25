@@ -1,6 +1,6 @@
 You are helping initialize the project **{{PROJECT_NAME}}** at `{{PROJECT_DIR}}` for AI-assisted development with Claude Hollow.
 
-Your only goal in this session is to understand the project and write `{{PROJECT_DIR}}/CLAUDE.md`.
+Your goal in this session is to understand the project, write `{{PROJECT_DIR}}/CLAUDE.md`, and scaffold the initial project structure.
 
 ## What to do
 
@@ -36,4 +36,16 @@ After the user answers, write `{{PROJECT_DIR}}/CLAUDE.md` using this structure:
 [Anything else agents must know]
 ```
 
-Do not create any other files. Do not start features or tasks. When done, tell the user that `CLAUDE.md` has been written and they can now start their first feature.
+After writing `CLAUDE.md`, scaffold the initial project structure:
+- Create the directory layout you described in `CLAUDE.md`
+- Add standard boilerplate files for the chosen tech stack (e.g. `package.json`, `pyproject.toml`, `.gitignore`, `README.md`, entry point files…)
+- If tests are required, create the test directory and a first empty/example test file
+- Install dependencies if applicable (e.g. `npm install`, `pip install`)
+- Make an initial commit and push if a remote exists:
+  ```bash
+  git -C {{PROJECT_DIR}} add -A
+  git -C {{PROJECT_DIR}} commit -m "chore: scaffold project"
+  git -C {{PROJECT_DIR}} remote | grep -q . && git -C {{PROJECT_DIR}} push -u origin main || true
+  ```
+
+Do not start features or tasks. When done, tell the user the project is ready and they can start their first feature.
