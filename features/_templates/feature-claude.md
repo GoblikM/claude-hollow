@@ -190,7 +190,12 @@ After archiving each task, check: are there any remaining tasks in `tasks/` (not
      ## Known limitations
      [Anything intentionally left out or deferred]
      ```
-  2. Proceed directly to step 6
+  2. Review and update `{{PROJECT_DIR}}/CLAUDE.md`:
+     - Read the current `{{PROJECT_DIR}}/CLAUDE.md`
+     - Based on completed tasks and `docs/summary.md`, identify what changed: new modules, conventions, tech decisions, testing patterns, project structure
+     - If updates are needed, show the user a summary of proposed changes and ask for approval before writing
+     - If no updates are needed, note that briefly and continue
+  3. Proceed directly to step 6
 
 ### 6. Hand off to user
 
