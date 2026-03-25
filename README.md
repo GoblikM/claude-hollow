@@ -24,8 +24,15 @@ The orchestrator **never writes code itself** — that is exclusively the role o
 curl -fsSL https://raw.githubusercontent.com/GoblikM/claude-hollow/main/install/unix.sh | bash
 ```
 
-Run the same command again to update to the latest version.
+**Windows (WSL):**
 
+First, install WSL if you haven't already (run in PowerShell as Administrator):
+```powershell
+wsl --install
+```
+Then open a WSL terminal and run the same install command as Linux.
+
+Run the same command again at any time to update to the latest version.
 
 On fresh install, run the command from the directory where you want the repo cloned. Restart your terminal after install.
 
