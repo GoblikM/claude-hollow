@@ -275,6 +275,8 @@ If **manual**: tell the user to push, create the MR, and use "Feature done" in t
 ### Scope
 Every task must have a `## Scope` section — list of files/directories the agent may change. The agent works exclusively within the Scope. If tests are required, include the test files/directories in Scope too.
 
+**Before defining Scope paths**, read `{{PROJECT_DIR}}/CLAUDE.md` to understand the directory conventions of the project. New files and folders must follow the existing structure (e.g. where modules, components, tests, and config belong).
+
 ### Tests
 Every task must have a `## Tests` section with a clear decision:
 - **Required: yes** — when the task contains logic (functions, data processing, business rules). Describe what to test and where test files go.
