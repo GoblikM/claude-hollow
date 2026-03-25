@@ -36,6 +36,8 @@ The orchestrator may only:
 - Move tasks to `done/`
 - Manage GTD structure (inbox, blocked, icebox)
 
+When creating tasks, the orchestrator must read `<workspace>/CLAUDE.md` to understand the project structure and define `## Scope` paths that are aligned with the existing directory conventions.
+
 ### Pipeline for each task
 
 Each task goes through the following subagents in order:
