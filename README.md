@@ -107,6 +107,17 @@ Each task goes through the following subagents in order:
 | `@task-agent` | Always | Implements changes, writes tests, commits to `task/<slug>` branch |
 | `@code-reviewer` | Always | Reviews diff, verifies AC, conventions, and tests |
 | `@tester` | Always | Runs tests, reports PASS / FAIL / SKIP |
+| `@explainer` | Learning mode | Explains implemented code in simple terms, writes `tasks/<slug>/explanation.md` |
+
+### Learning mode
+
+Enable it when starting a new feature in the menu — you'll be asked:
+
+```
+Learning mode — explain generated code? [y/N]:
+```
+
+When on, `@explainer` runs automatically after each task passes tests. It produces a beginner-friendly walkthrough of the code: what each function does, why it was written that way, and which programming concepts appear.
 
 ## GTD structure
 
