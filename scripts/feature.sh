@@ -141,19 +141,16 @@ MAIN_BRANCH=$(_detect_main_branch "$PROJECT_DIR")
 # ─── GTD structure initialization ────────────────────────────────────────────
 
 FEATURE_BRANCH="feature/$FEATURE_SLUG"
+WORKTREE_DIR="$FEATURE_DIR/workspace"
 
-if [[ -d "$FEATURE_DIR" ]]; then
-  echo "♻️  Feature '$FEATURE_SLUG' already exists, opening..."
-else
-  echo "🏗️  Initializing feature: $FEATURE_SLUG"
+_init_feature() {
+  local label="$1"
+  echo "$label"
   mkdir -p "$FEATURE_DIR"/{tasks/done,blocked,icebox,docs}
 
-  # Main branch already detected above
   BASE_BRANCH="${FROM_BRANCH:-$MAIN_BRANCH}"
-
   echo "🌿 Creating feature branch: $FEATURE_BRANCH (from $BASE_BRANCH)"
 
-  # Fetch and create feature branch
   git -C "$PROJECT_DIR" fetch origin "$BASE_BRANCH" --quiet 2>/dev/null || true
 
   if git -C "$PROJECT_DIR" show-ref --verify --quiet "refs/heads/$FEATURE_BRANCH" 2>/dev/null; then
@@ -165,14 +162,11 @@ else
     git -C "$PROJECT_DIR" checkout "$MAIN_BRANCH" --quiet 2>/dev/null || true
   fi
 
-  # Create git worktree
-  WORKTREE_DIR="$FEATURE_DIR/workspace"
   echo "📂 Creating git worktree: $WORKTREE_DIR"
   git -C "$PROJECT_DIR" worktree add "$WORKTREE_DIR" "$FEATURE_BRANCH" 2>/dev/null || {
     echo "   (worktree already exists or branch is checked out elsewhere)"
   }
 
-  # Generate CLAUDE.md from template
   if [[ -f "$OFFICE_DIR/features/_templates/feature-claude.md" ]]; then
     sed \
       -e "s|{{FEATURE_NAME}}|$FEATURE_SLUG|g" \
@@ -193,11 +187,18 @@ else
   echo "   📁 $FEATURE_DIR"
   echo "   🌿 $FEATURE_BRANCH"
   echo ""
+}
+
+if [[ -d "$FEATURE_DIR" ]] && ( [[ -d "$WORKTREE_DIR/.git" ]] || [[ -f "$WORKTREE_DIR/.git" ]] ); then
+  echo "♻️  Feature '$FEATURE_SLUG' already exists, opening..."
+elif [[ -d "$FEATURE_DIR" ]]; then
+  _init_feature "🔄 Re-initializing archived feature: $FEATURE_SLUG"
+else
+  _init_feature "🏗️  Initializing feature: $FEATURE_SLUG"
 fi
 
 # ─── Stale branch check ───────────────────────────────────────────────────────
 
-WORKTREE_DIR="$FEATURE_DIR/workspace"
 if [[ -d "$WORKTREE_DIR/.git" ]] || [[ -f "$WORKTREE_DIR/.git" ]]; then
   warn_if_stale "$PROJECT_DIR" "$FEATURE_BRANCH" "Feature branch"
 fi
