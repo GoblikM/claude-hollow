@@ -53,7 +53,7 @@ _list_features() {
 }
 
 _is_initialized() {
-  [[ -f "$1/CLAUDE.md" ]]
+  [[ -f "$1/CLAUDE.md" ]] && ! head -1 "$1/CLAUDE.md" | grep -q "^__CLAUDE_HOLLOW_INIT__$"
 }
 
 # ─── Screens ──────────────────────────────────────────────────────────────────

@@ -61,13 +61,6 @@ Goal: understand the intent well enough to write tasks with proper Acceptance Cr
 3. Ask 3–5 specific questions at once (not one by one)
 4. Wait for answers — don't plan tasks before you have them
 
-**If the project is new/empty** (no `CLAUDE.md`, no source files) — ask:
-- What type of project is this? (web app, CLI, API, library…)
-- What tech stack / language / framework?
-- What is the first thing you want to build?
-- Any constraints? (deployment target, must support X, performance requirements…)
-- Should the project have tests from the start? What kind?
-
 **If the project already exists** — ask:
 - **User experience**: How should this look/work from the user's perspective?
 - **Edge cases**: What happens on invalid input / repeated flow / interruption?
