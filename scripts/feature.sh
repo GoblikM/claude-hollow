@@ -25,6 +25,7 @@ FEATURE_NAME=""
 PROJECT_DIR=""
 FROM_BRANCH=""
 FEATURE_GOAL=""
+EXPLAIN_MODE="off"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -39,6 +40,10 @@ while [[ $# -gt 0 ]]; do
     --goal)
       FEATURE_GOAL="$2"
       shift 2
+      ;;
+    --explain)
+      EXPLAIN_MODE="on"
+      shift
       ;;
     --project)
       PROJECT_DIR="$2"
@@ -177,6 +182,7 @@ _init_feature() {
       -e "s|{{WORKSPACE_DIR}}|$WORKTREE_DIR|g" \
       -e "s|{{DATE}}|$(date +%Y-%m-%d)|g" \
       -e "s|{{FEATURE_GOAL}}|${FEATURE_GOAL:-*(not provided — gather during requirements)*}|g" \
+      -e "s|{{EXPLAIN_MODE}}|$EXPLAIN_MODE|g" \
       "$OFFICE_DIR/features/_templates/feature-claude.md" \
       > "$FEATURE_DIR/CLAUDE.md"
     echo "📝 CLAUDE.md generated"

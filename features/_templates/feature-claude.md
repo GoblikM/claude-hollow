@@ -15,6 +15,7 @@ You work in `features/{{PROJECT_SLUG}}/{{FEATURE_NAME}}/`.
 | **Main branch** | `{{MAIN_BRANCH}}` |
 | **Project architecture** | `{{PROJECT_DIR}}/CLAUDE.md` |
 | **Feature goal** | {{FEATURE_GOAL}} |
+| **Learning mode** | {{EXPLAIN_MODE}} |
 
 If `{{PROJECT_DIR}}/CLAUDE.md` exists, read it before defining tasks.
 
@@ -106,15 +107,16 @@ The pipeline is **flexible** — choose agents based on task complexity. Not eve
 | `@task-agent` | **Always** |
 | `@code-reviewer` | **Always** |
 | `@tester` | **Always** — reports SKIP only if genuinely untestable |
+| `@explainer` | Only if **Learning mode: on** — after tester passes; writes beginner-friendly explanation |
 
 **Simple task** (bug fix, small change):
 ```
-@task-agent → @code-reviewer → @tester
+@task-agent → @code-reviewer → @tester → [@explainer if Learning mode: on]
 ```
 
 **Complex task** (new module, API, unclear design):
 ```
-@architect → @task-agent → @code-reviewer → @tester
+@architect → @task-agent → @code-reviewer → @tester → [@explainer if Learning mode: on]
 ```
 
 ---
@@ -143,6 +145,12 @@ Read `tasks/<slug>/plan.md` before proceeding. Adjust task scope or AC if the pl
 ```
 - If `TESTS FAIL` → go back to step 1 with failure description
 - If `TESTS PASS` or `SKIP` → continue
+
+**Step 4 — Code explanation (only if Learning mode: on):**
+```
+@explainer Explain task/<slug> in workspace {{WORKSPACE_DIR}}
+```
+Skip this step if `Learning mode: off`. Writes `tasks/<slug>/explanation.md` — beginner-friendly walkthrough of the implemented code.
 
 **Stop condition — repeated failure:**
 Keep track of retry attempts per task. If `@task-agent` fails (reviewer or tester returns failure) **3 times in a row**:

@@ -46,6 +46,7 @@ Each task goes through the following subagents in order:
 1. **`@task-agent`** — implements changes, commits to `task/<slug>` branch
 2. **`@code-reviewer`** — reviews the diff, verifies AC and conventions; returns `APPROVED` or `CHANGES REQUESTED`
 3. **`@tester`** — runs tests; returns `TESTS PASS` or `TESTS FAIL`
+4. **`@explainer`** *(learning mode only)* — explains the implemented code in simple terms; writes `tasks/<slug>/explanation.md`; enabled per feature via `Learning mode: on` in the feature's CLAUDE.md
 
 If reviewer or tester returns failure → orchestrator runs `@task-agent` again with specific feedback.
 
