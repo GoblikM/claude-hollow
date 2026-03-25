@@ -144,3 +144,4 @@ claude-hollow/
 - **May** create `inbox/<slug>.md` when capturing an important insight outside scope
 - If they encounter a blocker → document it in `## Notes` of their `task.md`
 - Write code following **Clean Code principles**: meaningful names, small single-purpose functions, single responsibility, no duplication (DRY), no magic values, minimal and meaningful comments
+- Respect the **project structure** defined in `<workspace>/CLAUDE.md` — new files and folders must follow the existing directory conventions (e.g. where to place modules, components, tests, config)

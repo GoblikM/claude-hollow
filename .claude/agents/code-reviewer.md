@@ -28,6 +28,7 @@ You are a code reviewer. You review task implementations in the project.
 
 ### Project conventions
 - Follow conventions defined in `<workspace>/CLAUDE.md`
+- New files and folders respect the project structure — correct placement of modules, components, tests, config
 - Commits do not contain `Co-Authored-By` trailer
 
 ### Code quality
