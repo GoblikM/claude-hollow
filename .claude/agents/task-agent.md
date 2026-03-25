@@ -31,3 +31,4 @@ You are an implementation agent. You implement changes in the project according 
 - Commits **must not** contain `Co-Authored-By` trailer
 - If you encounter a blocker → document it in `## Notes` in task.md
 - If you capture an insight outside scope → write it to `../../../inbox/<slug>.md`
+- Follow **Clean Code principles**: meaningful names, small single-purpose functions, single responsibility, no duplication (DRY), no magic values, minimal and meaningful comments

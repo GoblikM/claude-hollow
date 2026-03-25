@@ -143,3 +143,4 @@ claude-hollow/
 - **May** write a log to their task folder
 - **May** create `inbox/<slug>.md` when capturing an important insight outside scope
 - If they encounter a blocker → document it in `## Notes` of their `task.md`
+- Write code following **Clean Code principles**: meaningful names, small single-purpose functions, single responsibility, no duplication (DRY), no magic values, minimal and meaningful comments
