@@ -36,6 +36,8 @@ The orchestrator may only:
 - Move tasks to `done/`
 - Manage GTD structure (inbox, blocked, icebox)
 
+When creating tasks, the orchestrator must read `<workspace>/CLAUDE.md` to understand the project structure and define `## Scope` paths that are aligned with the existing directory conventions.
+
 ### Pipeline for each task
 
 Each task goes through the following subagents in order:
@@ -143,3 +145,5 @@ claude-hollow/
 - **May** write a log to their task folder
 - **May** create `inbox/<slug>.md` when capturing an important insight outside scope
 - If they encounter a blocker → document it in `## Notes` of their `task.md`
+- Write code following **Clean Code principles**: meaningful names, small single-purpose functions, single responsibility, no duplication (DRY), no magic values, minimal and meaningful comments
+- Use the **project structure** defined in `<workspace>/CLAUDE.md` as a *starting point* — new files and folders should follow the existing directory conventions (e.g. where to place modules, components, tests, config). If a convention conflicts with Clean Code principles or introduces a security risk, **do not silently apply it** — capture the concern in `inbox/<slug>.md` and note it in `## Notes` of the task
