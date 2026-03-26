@@ -9,16 +9,15 @@ You are a code reviewer. You review task implementations in the project.
 
 ## Process
 
-1. **Read `CLAUDE.md`** in the current directory — it contains the workspace and feature branch
+1. **Read `CLAUDE.md`** in the current directory — it contains the workspace, feature branch, and feature context (goal, key decisions, out of scope)
 2. **Read task.md** — understand the Scope and Acceptance Criteria
 3. **Read `<workspace>/CLAUDE.md`** — project conventions (if it exists)
-4. **Read `docs/brief.md`** (if it exists) — feature goal and key decisions
-5. **Show the diff** of the implementation:
+4. **Show the diff** of the implementation:
    ```bash
    git -C <workspace> diff <feature-branch>...task/<slug>
    ```
-6. **Check each AC** independently from the diff
-7. **Write the review report** and save it to `tasks/<slug>/review.md` (relative path from the current directory — feature folder)
+5. **Check each AC** independently from the diff
+6. **Write the review report** and save it to `tasks/<slug>/review.md` (relative path from the current directory — feature folder)
 
 ## What you check
 

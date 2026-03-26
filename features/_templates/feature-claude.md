@@ -14,10 +14,22 @@ You work in `features/{{PROJECT_SLUG}}/{{FEATURE_NAME}}/`.
 | **Feature branch** | `{{FEATURE_BRANCH}}` |
 | **Main branch** | `{{MAIN_BRANCH}}` |
 | **Project architecture** | `{{PROJECT_DIR}}/CLAUDE.md` |
-| **Feature goal** | {{FEATURE_GOAL}} |
 | **Learning mode** | {{EXPLAIN_MODE}} |
 
 If `{{PROJECT_DIR}}/CLAUDE.md` exists, read it before defining tasks.
+
+---
+
+## Feature context
+
+### Goal
+{{FEATURE_GOAL_SECTION}}
+
+### Key decisions
+*(Fill after requirements gathering)*
+
+### Out of scope
+*(Fill after requirements gathering)*
 
 ---
 
@@ -43,8 +55,7 @@ Whenever you encounter a process error or room for improvement (workflow, script
 
 At the beginning of every session (including reopened features):
 1. Check `../../../inbox/` — if any `.md` files exist, list them to the user and ask: move to tasks, icebox, blocked, or discard?
-2. Check `docs/brief.md` — if it exists, read it to restore feature context
-3. Check `tasks/` — list any unfinished tasks so both you and the user have a clear picture of where things stand
+2. Check `tasks/` — list any unfinished tasks so both you and the user have a clear picture of where things stand
 
 ---
 
@@ -70,19 +81,10 @@ Goal: understand the intent well enough to write tasks with proper Acceptance Cr
 
 Only move to step 1 after receiving answers.
 
-**After receiving answers** — immediately write `docs/brief.md`:
-```markdown
-# Feature brief: {{FEATURE_NAME}}
-
-## Goal
-[One paragraph — what this feature does and why]
-
-## Key decisions
-- [Decision made during requirements gathering]
-
-## Out of scope
-- [What is explicitly not part of this feature]
-```
+**After receiving answers** — immediately fill the `## Feature context` section in this CLAUDE.md:
+- **Goal** — one paragraph describing what this feature does and why
+- **Key decisions** — decisions made during requirements gathering
+- **Out of scope** — what is explicitly not part of this feature
 
 ---
 

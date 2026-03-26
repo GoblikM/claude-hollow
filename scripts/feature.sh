@@ -181,7 +181,7 @@ _init_feature() {
       -e "s|{{MAIN_BRANCH}}|$MAIN_BRANCH|g" \
       -e "s|{{WORKSPACE_DIR}}|$WORKTREE_DIR|g" \
       -e "s|{{DATE}}|$(date +%Y-%m-%d)|g" \
-      -e "s|{{FEATURE_GOAL}}|${FEATURE_GOAL:-*(not provided — gather during requirements)*}|g" \
+      -e "s|{{FEATURE_GOAL_SECTION}}|${FEATURE_GOAL:-*(Not provided — fill after requirements gathering)*}|g" \
       -e "s|{{EXPLAIN_MODE}}|$EXPLAIN_MODE|g" \
       "$OFFICE_DIR/features/_templates/feature-claude.md" \
       > "$FEATURE_DIR/CLAUDE.md"
