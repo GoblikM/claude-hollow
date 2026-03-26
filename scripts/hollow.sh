@@ -9,6 +9,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 OFFICE_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 REGISTRY="$OFFICE_DIR/.projects"
+VERSION=$(git -C "$OFFICE_DIR" describe --tags --abbrev=0 2>/dev/null || echo "dev")
 source "$SCRIPT_DIR/lib.sh"
 
 # ─── Registry helpers ─────────────────────────────────────────────────────────
@@ -73,7 +74,7 @@ _screen_main() {
 
     clear
     echo ""
-    echo "  🏠  Claude Hollow"
+    echo "  🏠  Claude Hollow  ($VERSION)"
     echo "  ──────────────────────────────────────────"
 
     if [[ ${#names[@]} -eq 0 ]]; then
