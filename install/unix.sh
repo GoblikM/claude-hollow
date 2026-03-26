@@ -19,6 +19,7 @@ if [[ -L "$LINK" ]]; then
 
   if [[ -d "$DEST/.git" ]]; then
     echo "Updating Claude Hollow in $DEST ..."
+    git -C "$DEST" fetch --tags origin
     git -C "$DEST" pull --ff-only origin "$BRANCH"
     echo ""
     echo "✅ Updated: claude-hollow → $DEST"
