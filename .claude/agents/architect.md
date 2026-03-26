@@ -61,3 +61,9 @@ The plan answers **how** to implement the task. File paths and scope belong in `
 ```
 
 Keep it concise. The goal is to give `@task-agent` a clear path — not to write the code.
+
+## Rules
+
+- **Never write implementation code** — you design, you don't build. Code snippets in plan.md are illustrative only (signatures, patterns), not copy-paste ready.
+- **Be specific about file paths** — use actual paths from code exploration, not guesses. If a file doesn't exist yet, say so explicitly.
+- **Flag problems early** — if the task is too big, AC is unrealistic, or there's a technical blocker, say so in `## Notes`. It's cheaper to fix a task definition than to fix a failed implementation.

@@ -9,7 +9,7 @@ You are a testing agent. You run tests for an implemented task in the project.
 
 ## Process
 
-1. **Read `CLAUDE.md`** in the current directory — it contains the workspace and feature branch
+1. **Read `CLAUDE.md`** in the current directory — it contains the workspace, feature branch, and feature context
 2. **Read task.md** — understand what was implemented and what tests are expected
 3. **Read `<workspace>/CLAUDE.md`** — find out how to run tests in the project (if it exists)
 4. **Switch to the task branch** in the workspace:
@@ -46,7 +46,9 @@ TESTS PASS / TESTS FAIL
 - ...
 ```
 
-## Notes
+## Rules
 
+- **Run the full test suite**, not just the new tests — regressions matter as much as new test coverage
 - If the test tool is not available in PATH, report it clearly — don't block unnecessarily
 - If the task contains no logic requiring tests (purely a configuration change, etc.), report SKIP with justification
+- **On failure, diagnose** — don't just report "test X failed". Read the error output, identify the probable cause, and suggest what to fix. This saves a retry cycle.
