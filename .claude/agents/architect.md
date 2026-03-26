@@ -1,7 +1,7 @@
 ---
 name: architect
 description: Designs the implementation plan for a task before coding starts. Use for complex tasks — new modules, API design, non-trivial refactors.
-tools: Read, Glob, Grep
+tools: Read, Write, Edit, Glob, Grep
 model: inherit
 ---
 

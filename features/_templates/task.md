@@ -42,6 +42,11 @@ Context, constraints, implementation suggestions.
 tests/...
 ```
 
+## Pipeline state
+- **Attempt:** 1/3
+- **Last stage:** —
+- **Status:** not started
+
 ## Notes
 <!-- Runtime notes — review feedback, blocker descriptions, retry context.
      Added by orchestrator during pipeline execution. -->

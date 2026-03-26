@@ -186,7 +186,7 @@ _action_add_project() {
   echo "  ──────────────────────────────────────────"
   echo ""
   read -e -r -p "  Path to git repository: " project_path
-  project_path=$(eval echo "$project_path")
+  project_path="${project_path/#\~/$HOME}"
   [[ -z "$project_path" ]] && return
 
   if [[ ! -d "$project_path/.git" ]]; then
@@ -220,7 +220,7 @@ _action_create_project() {
   slug=$(slugify "$project_name")
 
   read -e -r -p "  Where to create it: " base_path
-  base_path=$(eval echo "$base_path")
+  base_path="${base_path/#\~/$HOME}"
   [[ -z "$base_path" ]] && return
 
   local project_path="$base_path/$slug"

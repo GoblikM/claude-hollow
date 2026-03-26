@@ -159,8 +159,13 @@ After @architect finishes:
 ```
 Skip this step if `Learning mode: off`. Writes `tasks/<slug>/explanation.md` — beginner-friendly walkthrough of the implemented code.
 
+**After each pipeline step**, update `## Pipeline state` in task.md:
+- Increment **Attempt** on each @task-agent rerun
+- Set **Last stage** to the agent that just finished (e.g. `code-reviewer → APPROVED`)
+- Set **Status** to: `in progress`, `blocked`, or `done`
+
 **Stop condition — repeated failure:**
-Keep track of retry attempts per task. If `@task-agent` fails (reviewer or tester returns failure) **3 times in a row**:
+Check the **Attempt** counter in `## Pipeline state`. If it reaches **3/3** and @task-agent still fails:
 1. Move the task to `blocked/<slug>/` — rename `task.md` to `issue.md`
 2. Add a `## Blocking reason` section describing what failed and why
 3. Ask the user how to proceed before continuing with other tasks
@@ -169,9 +174,21 @@ Keep track of retry attempts per task. If `@task-agent` fails (reviewer or teste
 
 ```bash
 git -C {{WORKSPACE_DIR}} checkout {{FEATURE_BRANCH}}
-git -C {{WORKSPACE_DIR}} merge task/<slug>
+git -C {{WORKSPACE_DIR}} merge --no-commit --no-ff task/<slug>
+```
+
+**If merge conflicts occur:**
+1. Abort: `git -C {{WORKSPACE_DIR}} merge --abort`
+2. Document the conflict in `## Notes` of `tasks/<slug>/task.md`
+3. Ask the user how to proceed
+
+**If merge is clean:**
+```bash
+git -C {{WORKSPACE_DIR}} commit --no-edit
 git -C {{WORKSPACE_DIR}} branch -d task/<slug>
 ```
+
+**Post-merge verification** — run the project's test suite on the feature branch to catch regressions introduced by the merge. If tests fail, create a fix task before continuing with the next task.
 
 Archive the task:
 ```bash
@@ -318,16 +335,6 @@ For **S complexity tasks** where @architect is skipped, the orchestrator fills S
 Every task must have a `## Tests` section with a clear decision:
 - **Required: yes** — when the task contains logic (functions, data processing, business rules). Describe what to test and where test files go.
 - **Required: no** — for pure UI changes, config-only changes, documentation, or trivial one-liners. Always include a brief reason.
-
-### Code quality
-
-When writing tasks that involve code changes, remind the agent to follow **Clean Code principles**:
-- Meaningful names (variables, functions, files)
-- Small, single-purpose functions
-- Single responsibility per module/class
-- No duplication (DRY)
-- No magic values — use named constants
-- Minimal and meaningful comments
 
 ### Agent may also:
 - Write a log to their task folder
