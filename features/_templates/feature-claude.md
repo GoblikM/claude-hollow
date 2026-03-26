@@ -90,11 +90,13 @@ Only move to step 1 after receiving answers.
 - Read `{{PROJECT_DIR}}/CLAUDE.md` for architecture context (if it exists)
 - **If `{{PROJECT_DIR}}/CLAUDE.md` does not exist**: suggest creating a `project-setup` task first — scaffold the project structure and create `{{PROJECT_DIR}}/CLAUDE.md` with conventions, tech stack, and how to run tests
 - Break down the requirement into concrete tasks with clear acceptance criteria
-- Create `tasks/<slug>/task.md` for each task
+- Create `tasks/<slug>/task.md` for each task — write **intent** (Description, AC, estimated complexity), but do **not** fill `## Scope` or `## Technical notes` — those are filled by `@architect`
+- **Plan incrementally** — create independent tasks upfront, but defer dependent tasks until their predecessors are complete (the actual implementation may change what's needed next)
 
 ### 2. Checklist before starting pipeline
 All items must be satisfied:
-- [ ] `task.md` exists and has Scope and Acceptance Criteria filled in
+- [ ] `task.md` exists and has Description and Acceptance Criteria filled in
+- [ ] Estimated complexity is set (S, M, or L)
 - [ ] Feature branch `{{FEATURE_BRANCH}}` exists in the project
 
 ### 3. Pipeline
@@ -103,29 +105,32 @@ The pipeline is **flexible** — choose agents based on task complexity. Not eve
 
 | Agent | When to use |
 |-------|-------------|
-| `@architect` | Complex tasks — new module, API design, non-trivial refactor, unclear approach |
+| `@architect` | **Always for M/L complexity** — reads code, fills Scope, Technical notes, and Test file location in task.md, writes plan.md. Optional for S (simple bug fix, config change). |
 | `@task-agent` | **Always** |
 | `@code-reviewer` | **Always** |
 | `@tester` | **Always** — reports SKIP only if genuinely untestable |
 | `@explainer` | Only if **Learning mode: on** — after tester passes; writes beginner-friendly explanation |
 
-**Simple task** (bug fix, small change):
+**Simple task** (S — bug fix, small change, config):
 ```
 @task-agent → @code-reviewer → @tester → [@explainer if Learning mode: on]
 ```
 
-**Complex task** (new module, API, unclear design):
+**Standard/complex task** (M/L — new module, refactor, API, multi-file change):
 ```
 @architect → @task-agent → @code-reviewer → @tester → [@explainer if Learning mode: on]
 ```
 
 ---
 
-**Step 0 — Architecture (if needed):**
+**Step 0 — Architecture (mandatory for M/L, optional for S):**
 ```
 @architect Review task/<slug> in workspace {{WORKSPACE_DIR}}
 ```
-Read `tasks/<slug>/plan.md` before proceeding. Adjust task scope or AC if the plan reveals issues.
+After @architect finishes:
+- Read the updated `tasks/<slug>/task.md` — @architect fills `## Scope`, `## Technical notes`, `## Tests → Test file location`, and may adjust complexity
+- Read `tasks/<slug>/plan.md` for the implementation approach
+- If @architect flagged issues with AC or feasibility, resolve them before proceeding
 
 **Step 1 — Implementation:**
 ```
@@ -136,14 +141,14 @@ Read `tasks/<slug>/plan.md` before proceeding. Adjust task scope or AC if the pl
 ```
 @code-reviewer Review task/<slug> in workspace {{WORKSPACE_DIR}}
 ```
-- If `CHANGES REQUESTED` → go back to step 1 with specific feedback
+- If `CHANGES REQUESTED` → write the specific feedback to `## Notes` in `tasks/<slug>/task.md` (labeled with attempt number), then go back to step 1
 - If `APPROVED` → continue
 
 **Step 3 — Tests (if required):**
 ```
 @tester Test task/<slug> in workspace {{WORKSPACE_DIR}}
 ```
-- If `TESTS FAIL` → go back to step 1 with failure description
+- If `TESTS FAIL` → write the failure description to `## Notes` in `tasks/<slug>/task.md` (labeled with attempt number), then go back to step 1
 - If `TESTS PASS` or `SKIP` → continue
 
 **Step 4 — Code explanation (only if Learning mode: on):**
@@ -274,6 +279,26 @@ If **manual**: tell the user to push, create the MR, and use "Feature done" in t
 
 ## Task writing rules
 
+### Task complexity and splitting
+
+Every task has an estimated complexity: **S**, **M**, or **L**. Use this to decide granularity and prevent oversized tasks.
+
+| Complexity | Scope | Typical change | Architect |
+|---|---|---|---|
+| **S** | 1–3 files, single concern | Bug fix, config change, rename, small UI tweak | Optional |
+| **M** | 4–8 files, one module/area | New component, API endpoint, refactor within one module | Required |
+| **L** | 8+ files or multiple modules | New feature spanning layers (e.g. DB + API + UI), major refactor | Required |
+
+**Splitting rules — a task must be split when:**
+- It has **more than one independent concern** (e.g. "add validation AND redesign the form" → two tasks)
+- It spans **multiple architectural layers** that can be delivered separately (e.g. backend API + frontend UI → two tasks)
+- Its AC list has **5+ items** — likely doing too much
+- It would be **hard to review as a single diff** — if a reviewer can't understand the full change in one sitting, it's too big
+
+**When in doubt, split.** Three small focused tasks are better than one large unfocused task. Each task should be independently reviewable and testable.
+
+**L complexity is a warning sign.** Before creating an L task, try to break it into 2–3 M tasks. Only keep L if the work is genuinely inseparable (e.g. a migration that must be atomic).
+
 ### Acceptance Criteria
 **AC must verify the problem is solved, not just that a change was made.**
 
@@ -283,7 +308,9 @@ If **manual**: tell the user to push, create the MR, and use "Feature done" in t
 ### Scope
 Every task must have a `## Scope` section — list of files/directories the agent may change. The agent works exclusively within the Scope. If tests are required, include the test files/directories in Scope too.
 
-**Before defining Scope paths**, read `{{PROJECT_DIR}}/CLAUDE.md` to understand the directory conventions of the project. New files and folders should follow the existing structure (e.g. where modules, components, tests, and config belong). If a convention appears incorrect, outdated, or conflicts with Clean Code principles or security, **do not propagate it** — create an `inbox/<slug>.md` item to revisit it, and note the concern in the task.
+**The orchestrator does NOT fill Scope.** Leave it empty in the draft task. `@architect` fills Scope based on actual code exploration — correct file paths, existing patterns, and project conventions from `{{PROJECT_DIR}}/CLAUDE.md`.
+
+For **S complexity tasks** where @architect is skipped, the orchestrator fills Scope and Test file location — but only after reading `{{PROJECT_DIR}}/CLAUDE.md` to understand directory conventions.
 
 ### Tests
 Every task must have a `## Tests` section with a clear decision:

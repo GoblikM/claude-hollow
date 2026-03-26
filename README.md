@@ -103,7 +103,7 @@ Each task goes through the following subagents in order:
 
 | Agent | When | Role |
 |-------|------|------|
-| `@architect` | Complex tasks | Reads task + existing code, writes `plan.md` with approach, files, risks |
+| `@architect` | M/L complexity | Reads code, enriches `task.md` (Scope, Technical notes, Test paths), writes `plan.md` with approach, interfaces, risks |
 | `@task-agent` | Always | Implements changes, writes tests, commits to `task/<slug>` branch |
 | `@code-reviewer` | Always | Reviews diff, verifies AC, conventions, and tests |
 | `@tester` | Always | Runs tests, reports PASS / FAIL / SKIP |

@@ -36,19 +36,21 @@ The orchestrator may only:
 - Move tasks to `done/`
 - Manage GTD structure (inbox, blocked, icebox)
 
-When creating tasks, the orchestrator must read `<workspace>/CLAUDE.md` to understand the project structure and define `## Scope` paths that are aligned with the existing directory conventions.
+When creating tasks, the orchestrator writes **intent** (Description, Acceptance Criteria) but does **not** define `## Scope` — that is filled by `@architect` based on actual code.
+
+Task complexity: **S** (1–3 files, single concern), **M** (4–8 files, one module), **L** (8+ files or multiple modules). L is a warning sign — prefer splitting into M tasks unless the work is inseparable. A task with 5+ AC items or multiple independent concerns must be split.
 
 ### Pipeline for each task
 
 Each task goes through the following subagents in order:
 
-0. **`@architect`** *(optional)* — reads task + existing code, writes `tasks/<slug>/plan.md`; use for complex tasks, new modules, non-trivial refactors
+0. **`@architect`** *(mandatory for M/L complexity, optional for S)* — reads task + existing code, fills `## Scope` and `## Technical notes` in `task.md`, writes `tasks/<slug>/plan.md`
 1. **`@task-agent`** — implements changes, commits to `task/<slug>` branch
-2. **`@code-reviewer`** — reviews the diff, verifies AC and conventions; returns `APPROVED` or `CHANGES REQUESTED`
+2. **`@code-reviewer`** — reviews the diff, verifies AC, conventions, and `plan.md` compliance (if exists); returns `APPROVED` or `CHANGES REQUESTED`
 3. **`@tester`** — runs tests; returns `TESTS PASS` or `TESTS FAIL`
 4. **`@explainer`** *(learning mode only)* — explains the implemented code in simple terms; writes `tasks/<slug>/explanation.md`; enabled per feature via `Learning mode: on` in the feature's CLAUDE.md
 
-If reviewer or tester returns failure → orchestrator runs `@task-agent` again with specific feedback.
+If reviewer or tester returns failure → orchestrator writes specific feedback to `## Notes` in `task.md`, then runs `@task-agent` again.
 
 ### Continuous improvement
 

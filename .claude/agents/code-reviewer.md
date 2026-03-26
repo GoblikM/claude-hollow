@@ -47,6 +47,12 @@ You are a code reviewer. You review task implementations in the project.
 ### Scope
 - Did the agent stay within the Scope from task.md?
 
+### Plan compliance (if `plan.md` exists)
+- Read `tasks/<slug>/plan.md`
+- Does the implementation follow the planned approach?
+- Were the planned interfaces/signatures respected?
+- If the agent deviated from the plan, is the deviation justified and an improvement?
+
 ## Review output
 
 ```
@@ -59,6 +65,9 @@ You are a code reviewer. You review task implementations in the project.
 - [OK/ISSUE] ...
 
 ### Code quality
+- [OK/ISSUE] ...
+
+### Plan compliance (if plan.md exists)
 - [OK/ISSUE] ...
 
 ### Conclusion
