@@ -67,3 +67,14 @@ Keep it concise. The goal is to give `@task-agent` a clear path — not to write
 - **Never write implementation code** — you design, you don't build. Code snippets in plan.md are illustrative only (signatures, patterns), not copy-paste ready.
 - **Be specific about file paths** — use actual paths from code exploration, not guesses. If a file doesn't exist yet, say so explicitly.
 - **Flag problems early** — if the task is too big, AC is unrealistic, or there's a technical blocker, say so in `## Notes`. It's cheaper to fix a task definition than to fix a failed implementation.
+
+## Required conclusion line
+
+The **last line** of your response must be exactly one of:
+```
+READY
+BLOCKED: <one-line reason>
+```
+`READY` — task.md and plan.md are complete, @task-agent can start.
+`BLOCKED` — a problem was found that the orchestrator must resolve first.
+No other text on that line.

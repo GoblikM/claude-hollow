@@ -188,7 +188,11 @@ git -C {{WORKSPACE_DIR}} commit --no-edit
 git -C {{WORKSPACE_DIR}} branch -d task/<slug>
 ```
 
-**Post-merge verification** — run the project's test suite on the feature branch to catch regressions introduced by the merge. If tests fail, create a fix task before continuing with the next task.
+**Post-merge verification** *(optional, recommended for features with 3+ tasks)* — if multiple tasks touched overlapping code, run a post-merge check to catch regressions the per-task tests couldn't see:
+```
+@tester Post-merge check — workspace {{WORKSPACE_DIR}}, branch {{FEATURE_BRANCH}}
+```
+If `TESTS FAIL` → create a fix task before continuing with the next task.
 
 Archive the task:
 ```bash
