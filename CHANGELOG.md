@@ -2,6 +2,29 @@
 
 All notable changes to Claude Hollow are documented in this file.
 
+## [v0.1.2] — 2026-03-26
+
+### Changed
+
+- **Task creation split between orchestrator and architect** — orchestrator writes intent (Description, AC, complexity), `@architect` fills technical details (Scope, Technical notes, Test paths) based on actual code exploration
+- **@architect is now mandatory for M/L complexity tasks** — optional only for S (simple bug fix, config change)
+- **Incremental task planning** — orchestrator creates independent tasks upfront, defers dependent tasks until predecessors are complete
+- **Task complexity definitions (S/M/L)** with concrete criteria and splitting rules — prevents oversized tasks
+- **plan.md no longer duplicates Scope** — task.md covers "what and where", plan.md covers "how" (approach, interfaces, risks)
+
+### Added
+
+- **Persistent retry feedback** — review/test failure feedback is written to `## Notes` in task.md before retry, survives session loss
+- **Plan compliance check** in `@code-reviewer` — verifies implementation follows `plan.md` approach when it exists
+- **Task splitting rules** — tasks must be split when they have multiple independent concerns, span architectural layers, or have 5+ AC items
+- **`## Notes` section** in task.md template for runtime context (feedback, blockers)
+- **Visual separator** in task.md template marking orchestrator vs architect sections
+
+### Fixed
+
+- Orchestrator no longer guesses file paths for Scope — architect fills them from actual code
+- README architect role description now matches expanded responsibilities
+
 ## [v0.1.1] — 2026-03-25
 
 ### Improved
